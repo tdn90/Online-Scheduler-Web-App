@@ -3,10 +3,54 @@
   <head>
     <meta charset="utf-8">
     <title>Schedule Organizer</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
   </head>
   <body> 
-    <h1>Hello, World!</h1>
+  	<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+      <h5 class="my-0 mr-md-auto font-weight-normal">Meeting Scheduler</h5>
+      <nav class="my-2 my-md-0 mr-md-3">
+      	<button class="btn btn-outline-primary" data-toggle="modal" data-target="#shareModal">Share this Schedule</button>
+        <!--<a class="p-2 text-dark" href="#">Features</a>
+        <a class="p-2 text-dark" href="#">Enterprise</a>
+        <a class="p-2 text-dark" href="#">Support</a>
+        <a class="p-2 text-dark" href="#">Pricing</a>-->
+      </nav>
+      
+    </div>
+    <div class="container">
+      <h1>Organizer</h1>
+      <hr />
+      <button class="btn btn-primary justify-content-center align-content-between d-flex">
+        <i class="material-icons mr-1">search</i>
+        <span>Open an existing Schedule</span>
+       </button>
+       <br />
+       <button class="btn btn-success justify-content-center align-content-between d-flex">
+        <i class="material-icons mr-1">add</i>
+        <span>Create a new Schedule</span>
+       </button>
+    </div>
+    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="shareModal" id="shareModal" aria-hidden="true">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title">Share This Schedule</h5>
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	          <span aria-hidden="true">&times;</span>
+	        </button>
+	      </div>
+	      <div class="modal-body">
+	        <p>Shareable links here</p>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
   </body>
 </html>
