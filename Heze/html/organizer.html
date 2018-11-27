@@ -6,10 +6,11 @@
   <title>Schedule Organizer</title>
   <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
     crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></scri-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
   <!--<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker-standalone.min.css">-->
@@ -20,17 +21,20 @@
   <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
     <h5 class="my-0 mr-md-auto font-weight-normal">Meeting Scheduler</h5>
     <nav class="my-2 my-md-0 mr-md-3">
-      
+
     </nav>
-    <button class="btn btn-outline-success justify-content-center align-content-between d-flex" data-toggle="modal" data-target="#newModal">
+    <button class="btn btn-outline-success justify-content-center align-content-between d-flex" data-toggle="modal"
+      data-target="#newModal">
       <i class="material-icons mr-1">add</i>
       <span>New Schedule</span>
     </button>&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class="btn btn-outline-primary justify-content-center align-content-between d-flex" data-toggle="modal" data-target="#openModal">
+    <button class="btn btn-outline-primary justify-content-center align-content-between d-flex" data-toggle="modal"
+      data-target="#openModal">
       <i class="material-icons mr-1">search</i>
       <span>Open Schedule</span>
     </button>&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class="btn btn-outline-primary justify-content-center align-content-between d-flex" data-toggle="modal" data-target="#shareModal">
+    <button class="btn btn-outline-primary justify-content-center align-content-between d-flex" data-toggle="modal"
+      data-target="#shareModal">
       <i class="material-icons mr-1">share</i>
       <span>Share</span>
     </button>
@@ -59,8 +63,10 @@
           <form id="findMeetingSchedule">
             <div class="form-group">
               <label for="meetingScheduleSecretCode">Meeting Secret Code</label>
-              <input type="text" class="form-control" id="meetingScheduleSecretCode" aria-describedby="meetingSecretCodeHelp" placeholder="AABBCCDDEE">
-              <small id="meetingScheduleSecretCodeText" class="form-text text-muted">This is not the same as the meeting schedule ID, which you gave to participants.</small>
+              <input type="text" class="form-control" id="meetingScheduleSecretCode" aria-describedby="meetingSecretCodeHelp"
+                placeholder="AABBCCDDEE">
+              <small id="meetingScheduleSecretCodeText" class="form-text text-muted">This is not the same as the
+                meeting schedule ID, which you gave to participants.</small>
             </div>
           </form>
         </div>
@@ -85,80 +91,41 @@
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
-          <form id="newMeetingSchedule">
-            <div class="form-group">
-              <label for="meetingScheduleName">Schedule Name</label>
-              <input type="text" class="form-control" id="meetingScheduleName">
-              <label for="meetingScheduleStartDate">Start Date (Weekends are excluded)</label>
-              <input type="text" class="form-control" id="meetingScheduleStartDate">
-              <label for="meetingScheduleEndDate">End Date</label>
-              <input type="text" class="form-control" id="meetingScheduleEndDate">
-              <label for="meetingScheduleDuration">Duration (minutes)</label>
-              <input type="text" class="form-control" id="meetingScheduleDuration">
-              <label for="meetingScheduleStartHour">Start Hour</label>
-              <select class="form-control" id="meetingScheduleStartHour">
-                <option>12:00 AM</option>
-                <option>1:00 AM</option>
-                <option>2:00 AM</option>
-                <option>3:00 AM</option>
-                <option>4:00 AM</option>
-                <option>5:00 AM</option>
-                <option>6:00 AM</option>
-                <option>7:00 AM</option>
-                <option>8:00 AM</option>
-                <option>9:00 AM</option>
-                <option>10:00 AM</option>
-                <option>11:00 AM</option>
-                <option>12:00 PM</option>
-                <option>1:00 PM</option>
-                <option>2:00 PM</option>
-                <option>3:00 PM</option>
-                <option>4:00 PM</option>
-                <option>5:00 PM</option>
-                <option>6:00 PM</option>
-                <option>7:00 PM</option>
-                <option>8:00 PM</option>
-                <option>9:00 PM</option>
-                <option>10:00 PM</option>
-                <option>11:00 PM</option>
-              </select>
-              <label for="meetingScheduleEndHour">End Hour (Inclusive)</label>
-              <select class="form-control" id="meetingScheduleEndHour">
-                <option>12:00 AM</option>
-                <option>1:00 AM</option>
-                <option>2:00 AM</option>
-                <option>3:00 AM</option>
-                <option>4:00 AM</option>
-                <option>5:00 AM</option>
-                <option>6:00 AM</option>
-                <option>7:00 AM</option>
-                <option>8:00 AM</option>
-                <option>9:00 AM</option>
-                <option>10:00 AM</option>
-                <option>11:00 AM</option>
-                <option>12:00 PM</option>
-                <option>1:00 PM</option>
-                <option>2:00 PM</option>
-                <option>3:00 PM</option>
-                <option>4:00 PM</option>
-                <option>5:00 PM</option>
-                <option>6:00 PM</option>
-                <option>7:00 PM</option>
-                <option>8:00 PM</option>
-                <option>9:00 PM</option>
-                <option>10:00 PM</option>
-                <option>11:00 PM</option>
-              </select>
-            </div>
+        <div id="meeting-create-vue">
+          <div class="modal-body">
+            <form id="newMeetingSchedule" novalidate ref="form">
+              <div class="form-group">
+                <div class="alert alert-danger" role="alert" v-if="showValidationAlert">Please make sure that you have filled out the form.</div>
+                <label for="meetingScheduleName">Schedule Name</label>
+                <input type="text" class="form-control" id="meetingScheduleName" v-model="name" required>
+                <label for="meetingScheduleStartDate">Start Date (Weekends are excluded)</label>
+                <input type="text" class="form-control" id="meetingScheduleStartDate" v-model="startDate" required>
+                <label for="meetingScheduleEndDate">End Date (inclusive)</label>
+                <input type="text" class="form-control" id="meetingScheduleEndDate" v-model="endDate" required>
+                <label for="meetingScheduleDuration">Meeting Duration (minutes)</label>
+                <input type="number" min="1" class="form-control" id="meetingScheduleDuration" v-model="duration" required>
+                <label for="meetingScheduleStartHour">Start Hour</label>
+                <select class="form-control" id="meetingScheduleStartHour" v-model="startselected" required>
+                  <option v-for="option in options" v-bind:value="option.value" :disabled="!option.s_enable">
+                    {{ option.text }}
+                  </option>
+                </select>
+                <label for="meetingScheduleEndHour">End Hour (Inclusive)</label>
+                <select class="form-control" id="meetingScheduleEndHour" v-model="endselected" required>
+                  <option v-for="option in options" v-bind:value="option.value" :disabled="!option.e_enable">
+                    {{ option.text }}
+                  </option>
+                </select>
+              </div>
             </form>
-        </div>
-        <div class="modal-footer">
-            <button class="btn btn-success justify-content-center align-content-between d-flex">
-                <i class="material-icons mr-1">add</i>
-                <span>Create Schedule</span>
-              </button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-success justify-content-center align-content-between d-flex" v-on:click="submit">
+              <i class="material-icons mr-1">add</i>
+              <span>Create Schedule</span>
+            </button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
         </div>
       </div>
     </div>
