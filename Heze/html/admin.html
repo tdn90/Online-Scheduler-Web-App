@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>System Administrator</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+    <script> 
+        function showDiv() {
+   document.getElementById('delete').style.display = "block";
+}
+    </script>
+  </head>
+  <body> 
+  	<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+      <h5 class="my-0 mr-md-auto font-weight-normal">Meeting Scheduler</h5>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-6">
+                <label>Find Meetings Older Than: <label>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Days" aria-label="Days" aria-describedby="button-addon2">
+                    <div class="input-group-append">
+                      <!-- <button class="btn btn-outline-dark" type="button" id="button-addon2">Go</button>
+                      <button class="btn btn-outline-danger" type="button" id="button-addon2">Delete</button> -->
+                      <div id="delete"  style="display:none;" class="answer_list" > <button id="delete" class="btn btn-outline-danger" type="button" id="button-addon2">Delete</button></div>
+                      <input class="btn btn-outline-dark" type="button" value="Go" onclick="showDiv()" />
+                    </div>
+                  </div>
+            </div>
+            <div class="col-lg-6">
+                <label>Find Meetings Older Than: <label>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Hours" aria-label="Hours" aria-describedby="button-addon2">
+                        <div class="input-group-append">
+                          <button class="btn btn-outline-dark" type="button" id="button-addon2">Go</button>
+                        </div>
+                      </div>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+  </body>
+</html>
