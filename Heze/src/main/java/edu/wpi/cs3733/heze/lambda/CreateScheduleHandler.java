@@ -39,12 +39,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 	        
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
-    	
-        /*int letter = 0;
-        while((letter = input.read()) >= 0) {
-            output.write(Character.toUpperCase(letter));
-        }*/
-		
+
 		String body;
 		boolean processed = false;
 		CreateScheduleResponse response = new CreateScheduleResponse("NOID", "NOKEY", 200);

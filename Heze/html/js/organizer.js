@@ -111,7 +111,6 @@ $(document).ready(function () {
                     api_content["startHour"] = parseInt(this.startselected)
                     api_content["endHour"] = parseInt(this.endselected)
                     this.showValidationAlert = false;
-                    alert("Will do XMLHTTPRequest with body: \n\n" + JSON.stringify(api_content))
                     //Hide the modal once we have a new body
                     var add_url = "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/createschedule";
                     var self = this
@@ -150,8 +149,7 @@ $(document).ready(function () {
         methods: {
             loadFromSecret: function (key) {
                 //TODO: check secret key
-                console.log("Would load with secret key" + key)
-                
+                console.log("Would load with secret key " + key)
             }
         }
     });
