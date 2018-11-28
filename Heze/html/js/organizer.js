@@ -12,6 +12,11 @@ function wdayonly(d, reverse=false) {
     }
     return d
 }
+
+function loadSchedule(secretKey) {
+    window.meeting_grid_vue.setKey(secretKey)
+}
+
 $(document).ready(function () {
     console.log("Start")
     var meeting_create_vue = new Vue({
@@ -96,6 +101,7 @@ $(document).ready(function () {
                     event.preventDefault();
                     event.stopPropagation();
                     this.showValidationAlert = true;
+                    his.$refs.form.classList.add('was-validated');
                 } else {
                     var api_content = {}
                     api_content["name"] = this.name
@@ -106,11 +112,32 @@ $(document).ready(function () {
                     api_content["endHour"] = parseInt(this.endselected)
                     this.showValidationAlert = false;
                     alert("Will do XMLHTTPRequest with body: \n\n" + JSON.stringify(api_content))
+                    //Hide the modal once we have a new body
+                    this.$refs.form.classList.remove('was-validated');
+                    loadSchedule("AABBCCDD")
+                    $('#newModal').modal('hide')
                 }
-                this.$refs.form.classList.add('was-validated');
             }
         }
     })
+
+    window.meeting_grid_vue = new Vue({
+        el: '#meeting-echedule-holder-vue',
+        data: {
+            hasKey: false,
+            key: null
+        },
+        methods: {
+            setKey: function(k) {
+                //TODO: check secret key
+                this.hasKey = true
+            }
+        }
+    });
+
+    //TODO: Delete
+    loadSchedule("AABBCCDDEE")
+
     var d = moment()
     wdayonly(d);
     meeting_create_vue.startDate = d.format("MM/DD/YYYY");
