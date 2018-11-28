@@ -16,7 +16,7 @@ import edu.wpi.cs3733.heze.lambda.api.GetScheduleResponse;
 
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 
-
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -61,9 +61,11 @@ public class GetScheduleHandler implements RequestStreamHandler {
 		        processed = true;
 		        body = null;
 			} else {
-				body = (String)event.get("body");
+				JSONObject qparams = (JSONObject) event.get("queryStringParameters");
+				body = (String)qparams.get("secretKey");
 				if (body == null) {
-					body = event.toJSONString();  // this is only here to make testing easier
+					response = new GetScheduleResponse(409);  // unable to process input
+			        processed = true;
 				}
 			}
 		} catch (ParseException pe) {
@@ -74,10 +76,11 @@ public class GetScheduleHandler implements RequestStreamHandler {
 		}
 		
 		if (!processed) {
-			GetScheduleRequest req = new Gson().fromJson(body, GetScheduleRequest.class);
-			logger.log(req.toString());
-
-			logger.log("Get a schedule with the id: " + req.secretkey);
+			//GetScheduleRequest req = new Gson().fromJson(body, GetScheduleRequest.class);
+			//logger.log(req.toString());
+			logger.log(body);
+			
+			//logger.log("Get a schedule with the id: " + req.secretkey);
 
 			// compute proper response
 			response = new GetScheduleResponse(200);
