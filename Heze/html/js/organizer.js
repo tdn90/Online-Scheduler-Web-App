@@ -1,4 +1,4 @@
-function wdayonly(d, reverse=false) {
+function wdayonly(d, reverse = false) {
     if (!reverse) {
         if (d.weekday() == 0)
             d.add(1, 'day')
@@ -14,7 +14,7 @@ function wdayonly(d, reverse=false) {
 }
 
 function loadSchedule(secretKey) {
-    window.meeting_grid_vue.setKey(secretKey)
+    window.meeting_grid_vue.loadFromSecret(secretKey)
 }
 
 $(document).ready(function () {
@@ -31,30 +31,30 @@ $(document).ready(function () {
             endDate: '',
             showValidationAlert: false,
             options: [
-                { text: '12:00 AM', value: '0', s_enable: true, e_enable: false},
-                { text: '1:00 AM', value: '1', s_enable: true, e_enable: true},
-                { text: '2:00 AM', value: '2', s_enable: true, e_enable: true},
-                { text: '3:00 AM', value: '3', s_enable: true, e_enable: true},
-                { text: '4:00 AM', value: '4', s_enable: true, e_enable: true},
-                { text: '5:00 AM', value: '5', s_enable: true, e_enable: true},
-                { text: '6:00 AM', value: '6', s_enable: true, e_enable: true},
-                { text: '7:00 AM', value: '7', s_enable: true, e_enable: true},
-                { text: '8:00 AM', value: '8', s_enable: true, e_enable: true},
-                { text: '9:00 AM', value: '9', s_enable: true, e_enable: true},
-                { text: '10:00 AM', value: '10', s_enable: true, e_enable: true},
-                { text: '11:00 AM', value: '11', s_enable: true, e_enable: true},
-                { text: '12:00 PM', value: '12', s_enable: true, e_enable: true},
-                { text: '1:00 PM', value: '13', s_enable: true, e_enable: true},
-                { text: '2:00 PM', value: '14', s_enable: true, e_enable: true},
-                { text: '3:00 PM', value: '15', s_enable: true, e_enable: true},
-                { text: '4:00 PM', value: '16', s_enable: true, e_enable: true},
-                { text: '5:00 PM', value: '17', s_enable: true, e_enable: true},
-                { text: '6:00 PM', value: '18', s_enable: true, e_enable: true},
-                { text: '7:00 PM', value: '19', s_enable: true, e_enable: true},
-                { text: '8:00 PM', value: '20', s_enable: true, e_enable: true},
-                { text: '9:00 PM', value: '21', s_enable: true, e_enable: true},
-                { text: '10:00 PM', value: '22', s_enable: true, e_enable: true},
-                { text: '11:00 PM', value: '23', s_enable: false, e_enable: true},
+                { text: '12:00 AM', value: '0', s_enable: true, e_enable: false },
+                { text: '1:00 AM', value: '1', s_enable: true, e_enable: true },
+                { text: '2:00 AM', value: '2', s_enable: true, e_enable: true },
+                { text: '3:00 AM', value: '3', s_enable: true, e_enable: true },
+                { text: '4:00 AM', value: '4', s_enable: true, e_enable: true },
+                { text: '5:00 AM', value: '5', s_enable: true, e_enable: true },
+                { text: '6:00 AM', value: '6', s_enable: true, e_enable: true },
+                { text: '7:00 AM', value: '7', s_enable: true, e_enable: true },
+                { text: '8:00 AM', value: '8', s_enable: true, e_enable: true },
+                { text: '9:00 AM', value: '9', s_enable: true, e_enable: true },
+                { text: '10:00 AM', value: '10', s_enable: true, e_enable: true },
+                { text: '11:00 AM', value: '11', s_enable: true, e_enable: true },
+                { text: '12:00 PM', value: '12', s_enable: true, e_enable: true },
+                { text: '1:00 PM', value: '13', s_enable: true, e_enable: true },
+                { text: '2:00 PM', value: '14', s_enable: true, e_enable: true },
+                { text: '3:00 PM', value: '15', s_enable: true, e_enable: true },
+                { text: '4:00 PM', value: '16', s_enable: true, e_enable: true },
+                { text: '5:00 PM', value: '17', s_enable: true, e_enable: true },
+                { text: '6:00 PM', value: '18', s_enable: true, e_enable: true },
+                { text: '7:00 PM', value: '19', s_enable: true, e_enable: true },
+                { text: '8:00 PM', value: '20', s_enable: true, e_enable: true },
+                { text: '9:00 PM', value: '21', s_enable: true, e_enable: true },
+                { text: '10:00 PM', value: '22', s_enable: true, e_enable: true },
+                { text: '11:00 PM', value: '23', s_enable: false, e_enable: true },
             ]
         },
         watch: {
@@ -62,7 +62,7 @@ $(document).ready(function () {
                 if (this.watchlock) return
                 this.watchlock = true;
                 if (parseInt(val) >= parseInt(this.endselected)) {
-                    this.endselected = (parseInt(val)+1).toString()
+                    this.endselected = (parseInt(val) + 1).toString()
                 }
                 this.watchlock = false;
             },
@@ -70,7 +70,7 @@ $(document).ready(function () {
                 if (this.watchlock) return
                 this.watchlock = true;
                 if (parseInt(val) <= parseInt(this.startselected)) {
-                    this.startselected = (parseInt(val)-1).toString()
+                    this.startselected = (parseInt(val) - 1).toString()
                 }
                 this.watchlock = false;
             },
@@ -96,7 +96,7 @@ $(document).ready(function () {
             }
         },
         methods: {
-            submit: function(event) {
+            submit: function (event) {
                 if (this.$refs.form.checkValidity() === false) {
                     event.preventDefault();
                     event.stopPropagation();
@@ -113,9 +113,29 @@ $(document).ready(function () {
                     this.showValidationAlert = false;
                     alert("Will do XMLHTTPRequest with body: \n\n" + JSON.stringify(api_content))
                     //Hide the modal once we have a new body
+                    var add_url = "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/createschedule";
+                    var self = this
+                    $.ajax({url: add_url, 
+                        type: 'POST',
+                        dataType: 'json',
+                        success: function(result){
+                            self.didSubmit(result)
+                        },
+                        error: function(resp) {
+                            alert("Error!")
+                        },
+                        data: JSON.stringify(api_content)
+                    });
+                }
+            },
+            didSubmit: function(result) {
+                if (result.httpCode == 200) {
+                    this.hasKey = true
                     this.$refs.form.classList.remove('was-validated');
-                    loadSchedule("AABBCCDD")
+                    loadSchedule(result.secretKey)
                     $('#newModal').modal('hide')
+                } else {
+                    alert("Error")
                 }
             }
         }
@@ -128,15 +148,16 @@ $(document).ready(function () {
             key: null
         },
         methods: {
-            setKey: function(k) {
+            loadFromSecret: function (key) {
                 //TODO: check secret key
-                this.hasKey = true
+                console.log("Would load with secret key" + key)
+                
             }
         }
     });
 
     //TODO: Delete
-    loadSchedule("AABBCCDDEE")
+    //loadSchedule("AABBCCDDEE")
 
     var d = moment()
     wdayonly(d);
@@ -147,13 +168,13 @@ $(document).ready(function () {
         $('#meetingScheduleStartDate').datepicker({
             format: 'mm/dd/yyyy',
             daysOfWeekDisabled: [0, 6]
-        }).on("changeDate", function(e) {
+        }).on("changeDate", function (e) {
             meeting_create_vue.startDate = e.format();
         });
         $('#meetingScheduleEndDate').datepicker({
             format: 'mm/dd/yyyy',
             daysOfWeekDisabled: [0, 6]
-        }).on("changeDate", function(e) {
+        }).on("changeDate", function (e) {
             meeting_create_vue.endDate = e.format();
         });
     });
