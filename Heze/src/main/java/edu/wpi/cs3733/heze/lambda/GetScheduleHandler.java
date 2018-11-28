@@ -47,7 +47,7 @@ public class GetScheduleHandler implements RequestStreamHandler {
 		
 		String body;
 		boolean processed = false;
-		GetScheduleResponse response = new GetScheduleResponse("NOID", "NOKEY", 200);
+		GetScheduleResponse response = new GetScheduleResponse(200);
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 			JSONParser parser = new JSONParser();
@@ -68,7 +68,7 @@ public class GetScheduleHandler implements RequestStreamHandler {
 			}
 		} catch (ParseException pe) {
 			logger.log("Exception parsing:" + pe.toString());
-			response = new GetScheduleResponse("NOID", "NOKEY", 410);  // unable to process input
+			response = new GetScheduleResponse(409);  // unable to process input
 	        processed = true;
 	        body = null;
 		}
@@ -77,10 +77,10 @@ public class GetScheduleHandler implements RequestStreamHandler {
 			GetScheduleRequest req = new Gson().fromJson(body, GetScheduleRequest.class);
 			logger.log(req.toString());
 
-			logger.log("Create a schedule with the name: " + req.name);
+			logger.log("Get a schedule with the id: " + req.secretkey);
 
 			// compute proper response
-			response = new GetScheduleResponse("FAKEID", "FAKEKEY", 200);
+			response = new GetScheduleResponse(200);
 		}
 		
 		responseJson.put("body", new Gson().toJson(response));

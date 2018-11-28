@@ -9,6 +9,6 @@ public class GetScheduleRequest {
 	}
 	
 	public String toString() {
-		return "CreateSchedule(" + secretkey + ")";
+		return "GetSchedule(" + secretkey + ")";
 	}
 }
