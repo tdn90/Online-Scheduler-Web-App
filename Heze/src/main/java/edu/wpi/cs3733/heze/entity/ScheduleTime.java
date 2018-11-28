@@ -19,7 +19,7 @@ public class ScheduleTime {
 		this.minute = minutes % 60;
 	}
 	
-	long convertToMilli() {
+	public long convertToMilli() {
 		long totalMinutes = this.hour * 60 + this.minute;
 		return totalMinutes * 60000;
 	}
