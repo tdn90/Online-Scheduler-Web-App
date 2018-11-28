@@ -1,5 +1,6 @@
 package edu.wpi.cs3733.heze.entity;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class Schedule {
@@ -8,12 +9,12 @@ public class Schedule {
 	List<ScheduleDate> days; 
 	String schedule_secretKey; 
 	String name; 
-	Time startTime; 
-	Time endTime; 
+	ScheduleTime startTime; 
+	ScheduleTime endTime; 
 	int meetingDuration; 
 	
-	public Schedule(String scheduleID, List<ScheduleDate> days, String schedule_secretKey, String name, Time startTime,
-			Time endTime, int meetingDuration) {
+	public Schedule(String scheduleID, List<ScheduleDate> days, String schedule_secretKey, String name, ScheduleTime startTime,
+			ScheduleTime endTime, int meetingDuration) {
 		super();
 		this.scheduleID = scheduleID;
 		this.days = days;

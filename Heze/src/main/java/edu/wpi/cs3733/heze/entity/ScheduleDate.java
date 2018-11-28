@@ -3,9 +3,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import entity.PuzzlePiece;
-
-public class ScheduleDate implements Iterable<TimeSlot> {
+public class ScheduleDate{
 	String id;
 	Date date;
 	Schedule schedule;
