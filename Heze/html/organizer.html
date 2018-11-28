@@ -43,7 +43,7 @@
     <h1>Organizer</h1>
     <hr />
     <div id="meeting-echedule-holder-vue">
-      <meeting-schedule-grid v-if="hasKey" mode="organizer"></meeting-schedule-grid>
+      <meeting-schedule-grid v-if="hasKey" mode="organizer" v-bind:value="grid_data"></meeting-schedule-grid>
     </div>
   </div>
 
@@ -63,18 +63,21 @@
         </div>
         <div class="modal-body">
           <p>Please enter the secret meeting password that was given to you when you made your meeting schedule.</p>
+          <div class="alert alert-danger" v-if="showAlert">
+            <strong>Whoops! </strong>Please enter a valid meeting schedule secret key
+          </div>
           <form id="findMeetingSchedule">
             <div class="form-group">
               <label for="meetingScheduleSecretCode">Meeting Secret Code</label>
               <input type="text" class="form-control" id="meetingScheduleSecretCode" aria-describedby="meetingSecretCodeHelp"
-                placeholder="AABBCCDDEE">
+                placeholder="AABBCCDDEE" v-model="secretKey">
               <small id="meetingScheduleSecretCodeText" class="form-text text-muted">This is not the same as the
                 meeting schedule ID, which you gave to participants.</small>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button class="btn btn-primary justify-content-center align-content-between d-flex">
+          <button class="btn btn-primary justify-content-center align-content-between d-flex" v-on:click="submit">
             <i class="material-icons mr-1">search</i>
             <span>Find Schedule</span>
           </button>

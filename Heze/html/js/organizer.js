@@ -17,6 +17,10 @@ function loadSchedule(secretKey) {
     window.meeting_grid_vue.loadFromSecret(secretKey)
 }
 
+function loadFromPopup() {
+    console.log($("#meetingScheduleSecretCode").val())
+}
+
 $(document).ready(function () {
     console.log("Start")
     var meeting_create_vue = new Vue({
@@ -145,12 +149,93 @@ $(document).ready(function () {
         el: '#meeting-echedule-holder-vue',
         data: {
             hasKey: false,
-            key: null
+            grid_data: {}
         },
         methods: {
             loadFromSecret: function (key) {
                 //TODO: check secret key
                 console.log("Would load with secret key " + key)
+                this.grid_data = {
+                    startTime: 9,
+                    endTime:   17,
+                    meetingDuration: 45,
+                    dates: [
+                        {
+                            date: 1543276800,
+                            id: "asd",
+                            timeslots: [
+                                {
+                                    id:"dsa",
+                                    start:1543309200,
+                                    organizerAvailable: true,
+                                    meeting: {
+                                        id: "asdasdasd",
+                                        participant: "John Doe"
+                                    }
+                                },
+                                {
+                                    id:"dsa",
+                                    start:1543395600,
+                                    organizerAvailable: true,
+                                    meeting: null
+                                }
+                            ]
+                        },
+                        {
+                            date: 1543363200,
+                            id: "asd",
+                            timeslots: [
+                                {
+                                    id:"dsa",
+                                    start:1543395600,
+                                    organizerAvailable: true,
+                                    meeting: {
+                                        id: "asdasdasd",
+                                        participant: "Jane Doe"
+                                    }
+                                },
+                                {
+                                    id:"dsa",
+                                    start:1543395600,
+                                    organizerAvailable: true,
+                                    meeting: null
+                                }
+                            ]
+                        },
+                    ]
+                }
+                this.hasKey = true;
+                
+                var get_url = "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/getschedule?secretKey=" + key;
+                var self = this
+                $.ajax({url: get_url, 
+                    type: 'GET',
+                    success: function(result){
+                        console.log("Eventually use this data: " + JSON.stringify(result))
+                    },
+                    error: function(resp) {
+                        alert("Error!")
+                    },
+                });
+            }
+        }
+    });
+
+    var open_modal = new Vue({
+        el: '#openModal',
+        data: {
+            showAlert: false,
+            secretKey: ""
+        },
+        methods: {
+            submit: function() {
+                if (this.secretKey == "") {
+                    this.showAlert = true
+                } else {
+                    this.showAlert = false
+                    loadSchedule(this.secretKey)
+                    $('#openModal').modal('hide')
+                }
             }
         }
     });

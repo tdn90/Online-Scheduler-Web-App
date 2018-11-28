@@ -34,7 +34,7 @@ public class GetScheduleHandler implements RequestStreamHandler {
     	
     	JSONObject headerJson = new JSONObject();
 		headerJson.put("Content-Type",  "application/json");  // not sure if needed anymore?
-		headerJson.put("Access-Control-Allow-Methods", "POST,OPTIONS");
+		headerJson.put("Access-Control-Allow-Methods", "GET,OPTIONS");
 	    headerJson.put("Access-Control-Allow-Origin",  "*");
 	        
 		JSONObject responseJson = new JSONObject();
