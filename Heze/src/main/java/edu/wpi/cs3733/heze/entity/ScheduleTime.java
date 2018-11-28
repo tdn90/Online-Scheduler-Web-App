@@ -9,6 +9,10 @@ public class ScheduleTime {
 		this.minute = minute;
 	}
 	
+	public ScheduleTime(long milli) {
+		getHourMinuteFromMilli(milli);
+	}
+	
 	void getHourMinuteFromMilli(long milliseconds) {
 		long minutes = milliseconds / 60000;
 		this.hour = minutes / 60; 
