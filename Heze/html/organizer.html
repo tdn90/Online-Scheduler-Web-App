@@ -1,56 +1,160 @@
 <!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Schedule Organizer</title>
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
-  </head>
-  <body> 
-  	<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-      <h5 class="my-0 mr-md-auto font-weight-normal">Meeting Scheduler</h5>
-      <nav class="my-2 my-md-0 mr-md-3">
-      	<button class="btn btn-outline-primary" data-toggle="modal" data-target="#shareModal">Share this Schedule</button>
-        <!--<a class="p-2 text-dark" href="#">Features</a>
-        <a class="p-2 text-dark" href="#">Enterprise</a>
-        <a class="p-2 text-dark" href="#">Support</a>
-        <a class="p-2 text-dark" href="#">Pricing</a>-->
-      </nav>
-      
+
+<head>
+  <meta charset="utf-8">
+  <title>Schedule Organizer</title>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.23/moment-timezone.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+  <script src="js/component_schedulegrid.js"></script>
+  <script src="js/organizer.js"></script>
+</head>
+
+<body>
+  <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+    <h5 class="my-0 mr-md-auto font-weight-normal">Meeting Scheduler</h5>
+    <nav class="my-2 my-md-0 mr-md-3">
+
+    </nav>
+    <button class="btn btn-outline-success justify-content-center align-content-between d-flex" data-toggle="modal"
+      data-target="#newModal">
+      <i class="material-icons mr-1">add</i>
+      <span>New Schedule</span>
+    </button>&nbsp;&nbsp;&nbsp;&nbsp;
+    <button class="btn btn-outline-primary justify-content-center align-content-between d-flex" data-toggle="modal"
+      data-target="#openModal">
+      <i class="material-icons mr-1">search</i>
+      <span>Open Schedule</span>
+    </button>&nbsp;&nbsp;&nbsp;&nbsp;
+    <button class="btn btn-outline-primary justify-content-center align-content-between d-flex" data-toggle="modal"
+      data-target="#shareModal">
+      <i class="material-icons mr-1">share</i>
+      <span>Share</span>
+    </button>
+  </div>
+  <div class="container">
+    <h1>Organizer</h1>
+    <hr />
+    <div id="meeting-echedule-holder-vue">
+      <meeting-schedule-grid v-if="hasKey" mode="organizer"></meeting-schedule-grid>
     </div>
-    <div class="container">
-      <h1>Organizer</h1>
-      <hr />
-      <button class="btn btn-primary justify-content-center align-content-between d-flex">
-        <i class="material-icons mr-1">search</i>
-        <span>Open an existing Schedule</span>
-       </button>
-       <br />
-       <button class="btn btn-success justify-content-center align-content-between d-flex">
-        <i class="material-icons mr-1">add</i>
-        <span>Create a new Schedule</span>
-       </button>
+  </div>
+
+  <!------------>
+  <!-- Modals -->
+  <!------------>
+
+  <!-- Open schedule modal -->
+  <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="openModal" id="openModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Find your meeting schedule</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Please enter the secret meeting password that was given to you when you made your meeting schedule.</p>
+          <form id="findMeetingSchedule">
+            <div class="form-group">
+              <label for="meetingScheduleSecretCode">Meeting Secret Code</label>
+              <input type="text" class="form-control" id="meetingScheduleSecretCode" aria-describedby="meetingSecretCodeHelp"
+                placeholder="AABBCCDDEE">
+              <small id="meetingScheduleSecretCodeText" class="form-text text-muted">This is not the same as the
+                meeting schedule ID, which you gave to participants.</small>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary justify-content-center align-content-between d-flex">
+            <i class="material-icons mr-1">search</i>
+            <span>Find Schedule</span>
+          </button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
     </div>
-    <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="shareModal" id="shareModal" aria-hidden="true">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <h5 class="modal-title">Share This Schedule</h5>
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-	          <span aria-hidden="true">&times;</span>
-	        </button>
-	      </div>
-	      <div class="modal-body">
-	        <p>Shareable links here</p>
-	      </div>
-	      <div class="modal-footer">
-	        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-	      </div>
-	    </div>
-	  </div>
-	</div>
-  </body>
+  </div>
+
+  <!-- New schedule modal -->
+  <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="newModal" id="newModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Create a meeting schedule</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div id="meeting-create-vue">
+          <div class="modal-body">
+            <form id="newMeetingSchedule" novalidate ref="form">
+              <div class="form-group">
+                <div class="alert alert-danger" role="alert" v-if="showValidationAlert">Please make sure that you have filled out the form.</div>
+                <label for="meetingScheduleName">Schedule Name</label>
+                <input type="text" class="form-control" id="meetingScheduleName" v-model="name" required>
+                <label for="meetingScheduleStartDate">Start Date (Weekends are excluded)</label>
+                <input type="text" class="form-control" id="meetingScheduleStartDate" v-model="startDate" required>
+                <label for="meetingScheduleEndDate">End Date (inclusive)</label>
+                <input type="text" class="form-control" id="meetingScheduleEndDate" v-model="endDate" required>
+                <label for="meetingScheduleDuration">Meeting Duration (minutes)</label>
+                <input type="number" min="1" class="form-control" id="meetingScheduleDuration" v-model="duration" required>
+                <label for="meetingScheduleStartHour">Start Hour</label>
+                <select class="form-control" id="meetingScheduleStartHour" v-model="startselected" required>
+                  <option v-for="option in options" v-bind:value="option.value" :disabled="!option.s_enable">
+                    {{ option.text }}
+                  </option>
+                </select>
+                <label for="meetingScheduleEndHour">End Hour (Exclusive)</label>
+                <select class="form-control" id="meetingScheduleEndHour" v-model="endselected" required>
+                  <option v-for="option in options" v-bind:value="option.value" :disabled="!option.e_enable">
+                    {{ option.text }}
+                  </option>
+                </select>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-success justify-content-center align-content-between d-flex" v-on:click="submit">
+              <i class="material-icons mr-1">add</i>
+              <span>Create Schedule</span>
+            </button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Schedule Modal -->
+  <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="shareModal" id="shareModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Share This Schedule</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Shareable Meeting Schedule Code: <strong>ABCDE</strong></p>
+          <p>Participants can go diretly to your schedule with <kbd>http://example.com/participant.html?id=ABCDE</kbd></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
 </html>
