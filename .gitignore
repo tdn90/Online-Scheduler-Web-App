@@ -16,6 +16,8 @@ local.properties
 .loadpath
 .recommenders
 
+Heze/target/
+
 # External tool builders
 .externalToolBuilders/
 
