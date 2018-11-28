@@ -17,11 +17,44 @@ public class MeetingDAO {
     	}
     }
     
+    public void addMeeting(Meeting meeting) throws Exception {
+    	String meetingID = meeting.getId();
+    	String timeslotID = meeting.getTl().getTimeslotID();
+    	String participantName = meeting.getParticipant();
+    	String secretKey = meeting.getSecretKey();
+    	
+    	try {
+			PreparedStatement ps = conn.prepareStatement("insert into Meeting values (?, ?, ?, ?);");
+			ps.setString(1, meetingID);
+			ps.setString(2, timeslotID);
+			ps.setString(3, participantName);
+			ps.setString(4, secretKey);
+			int resultSet = ps.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Failed in getting constant: " + e.getMessage());
+		}
+    }
+    
+    public void delMeeting(String meetingID) throws Exception {
+		try {
+			Meeting meeting = null;
+			PreparedStatement ps = conn.prepareStatement("delete * FROM Meeting WHERE MeetingID=?;");
+			ps.setString(1, meetingID);
+			int resultSet = ps.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Failed in getting constant: " + e.getMessage());
+		}
+    }
+    
 	public Meeting getMeeting(String meetingID) throws Exception {
 
 		try {
 			Meeting meeting = null;
-			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Constants WHERE MeetingID=?;");
+			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meeting WHERE MeetingID=?;");
 			ps.setString(1, meetingID);
 			ResultSet resultSet = ps.executeQuery();
 			
@@ -40,7 +73,7 @@ public class MeetingDAO {
 			ps.close();
 			
 //			query list of time slots
-			PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM Constants WHERE MeetingID=?;");
+			PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM Meeting WHERE MeetingID=?;");
 			ps2.setString(1, meetingID);
 			ResultSet resultSet2 = ps2.executeQuery();
 			
