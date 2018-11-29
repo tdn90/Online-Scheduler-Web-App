@@ -1,8 +1,10 @@
 package edu.wpi.cs3733.heze.database;
 
 import java.sql.*;
+import java.util.List;
 
 import edu.wpi.cs3733.heze.entity.Schedule;
+import edu.wpi.cs3733.heze.entity.ScheduleDate;
 
 public class ScheduleDAO {
 	java.sql.Connection conn;
@@ -18,13 +20,32 @@ public class ScheduleDAO {
     //TODO: implement this
     public Schedule getSchedule(String id) throws Exception {
     	try {
-    		Schedule schedule = null;
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO TimeSlot (timeSlotID, startTime, meetingLength, DateID, organizerAvailable) values (?, ?, ?, ?, ?);");
-            return schedule;
+    		
+    		
+    		
+    		PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedule WHERE scheduleID=?;");
+			ps.setString(1, id);
+			ResultSet resultSet = ps.executeQuery();
+			
+			String timeSlotID = "";
+			String participantName = "";
+			String secretKey = "";
+
+			while (resultSet.next()) {
+				timeSlotID = resultSet.getString("timeSlotID");
+				participantName = resultSet.getString("participantName");
+				secretKey = resultSet.getString("secretKey");
+			}
+			resultSet.close();
+			ps.close();
+			
+            return null;
         } catch (Exception e) {
             throw new Exception("Failed to insert timeslot: " + e.getMessage());
         }
     }
+    
+    //update
     
     //TODO
     public boolean deleteSchedule(String id) throws Exception {
