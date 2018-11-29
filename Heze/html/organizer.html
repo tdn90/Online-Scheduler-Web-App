@@ -107,18 +107,29 @@
                 <div class="alert alert-danger" role="alert" v-if="showValidationAlert">Please make sure that you have filled out the form.</div>
                 <label for="meetingScheduleName">Schedule Name</label>
                 <input type="text" class="form-control" id="meetingScheduleName" v-model="name" required>
+                <br />
                 <label for="meetingScheduleStartDate">Start Date (Weekends are excluded)</label>
                 <input type="text" class="form-control" id="meetingScheduleStartDate" v-model="startDate" required>
+                <br />
                 <label for="meetingScheduleEndDate">End Date (inclusive)</label>
                 <input type="text" class="form-control" id="meetingScheduleEndDate" v-model="endDate" required>
-                <label for="meetingScheduleDuration">Meeting Duration (minutes)</label>
-                <input type="number" min="1" class="form-control" id="meetingScheduleDuration" v-model="duration" required>
+                <br />
+                <p>Meeting Duration:</p>
+                <!--<input type="number" min="1" class="form-control" id="meetingScheduleDuration" v-model="duration" required>-->
+                <input type="radio" id="15mins" value="15" v-model="duration">
+                <label for="15mins">15 Minutes</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" id="30mins" value="30" v-model="duration">
+                <label for="30mins">30 Minutes</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" id="60mins" value="60" v-model="duration">
+                <label for="60mins">60 Minutes</label>
+                <br /><br />
                 <label for="meetingScheduleStartHour">Start Hour</label>
                 <select class="form-control" id="meetingScheduleStartHour" v-model="startselected" required>
                   <option v-for="option in options" v-bind:value="option.value" :disabled="!option.s_enable">
                     {{ option.text }}
                   </option>
                 </select>
+                <br />
                 <label for="meetingScheduleEndHour">End Hour (Exclusive)</label>
                 <select class="form-control" id="meetingScheduleEndHour" v-model="endselected" required>
                   <option v-for="option in options" v-bind:value="option.value" :disabled="!option.e_enable">
