@@ -1,16 +1,21 @@
 package edu.wpi.cs3733.heze.entity;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
 public class ScheduleDate{
 	String id;
-	Date date;
+	String date;
 	Schedule schedule;
 	List<TimeSlot> slots;
 	
-	public ScheduleDate(String id, Date date, Schedule schedule) {
+	/**
+	 * 
+	 * @param id
+	 * @param date: String representation of date in yyyy-mm-dd format
+	 * @param schedule
+	 */
+	public ScheduleDate(String id, String date, Schedule schedule) {
 		this.id = id;
 		this.date = date;
 		this.schedule = schedule;
