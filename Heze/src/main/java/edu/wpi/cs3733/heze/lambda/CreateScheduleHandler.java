@@ -11,6 +11,7 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
+import edu.wpi.cs3733.heze.entity.Schedule;
 import edu.wpi.cs3733.heze.lambda.api.CreateScheduleRequest;
 import edu.wpi.cs3733.heze.lambda.api.CreateScheduleResponse;
 
@@ -71,11 +72,16 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 		if (!processed) {
 			CreateScheduleRequest req = new Gson().fromJson(body, CreateScheduleRequest.class);
 			logger.log(req.toString());
+			
+			
+			//Make a schedule
+			Schedule s = Schedule.createSchedule(req.name, req.start, req.end, req.meetingDuration, req.startHour, req.endHour);
 
-			logger.log("Create a schedule with the name: " + req.name);
+			//logger.log("Create a schedule with the name: " + req.name);
 
 			// compute proper response
-			response = new CreateScheduleResponse("FAKEID", "FAKEKEY", 200);
+			response = new CreateScheduleResponse(s.getScheduleID(), s.getSchedule_secretKey(), 200);
+			logger.log("Create response: " + response.toString());
 		}
 		
 		responseJson.put("body", new Gson().toJson(response));

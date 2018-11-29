@@ -2,6 +2,8 @@ package edu.wpi.cs3733.heze.entity;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,12 +31,19 @@ public class Schedule {
 		String id = Utilities.generateKey(10);
 		String secretKey = Utilities.generateKey(30);
 		Schedule schedule = new Schedule(id, secretKey, name, startHour, endHour, meetingDuration);
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		DateTimeFormatter DATEFORMATTER1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+	    DateTimeFormatter DATEFORMATTER = new DateTimeFormatterBuilder().append(DATEFORMATTER1)
+		    .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+		    .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
+		    .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+		    .toFormatter();
+
 		/* do a for loop to create all days between startDay and EndDay (inclusive)
 		 * and add to schedule
 		 */
-		LocalDateTime start = LocalDateTime.parse(startDay, formatter);
-		LocalDateTime end = LocalDateTime.parse(endDay, formatter);
+		LocalDateTime start = LocalDateTime.parse(startDay, DATEFORMATTER);
+		LocalDateTime end = LocalDateTime.parse(endDay, DATEFORMATTER);
 		
 		for (LocalDateTime currentDate = start; currentDate.isBefore(end); currentDate = currentDate.plusDays(1)) {
 			if (currentDate.getDayOfWeek() != java.time.DayOfWeek.SUNDAY && currentDate.getDayOfWeek() != java.time.DayOfWeek.SATURDAY) {
