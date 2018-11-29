@@ -17,32 +17,41 @@ public class MeetingDAO {
     	}
     }
     
-    public void addMeeting(Meeting meeting) throws Exception {
+    // NO NEED FOR UPDATE 
+    
+    // get, add, delete
+    public boolean addMeeting(Meeting meeting, String timeSlotID) throws Exception {
     	String meetingID = meeting.getId();
-    	String timeslotID = meeting.getTl().getTimeslotID();
     	String participantName = meeting.getParticipant();
     	String secretKey = meeting.getSecretKey();
     	
     	try {
-			PreparedStatement ps = conn.prepareStatement("insert into Meeting values (?, ?, ?, ?);");
+			PreparedStatement ps = conn.prepareStatement("Insert into Meeting values (?, ?, ?, ?);");
 			ps.setString(1, meetingID);
-			ps.setString(2, timeslotID);
+			ps.setString(2, timeSlotID);
 			ps.setString(3, participantName);
 			ps.setString(4, secretKey);
 			int resultSet = ps.executeUpdate();
-			
+			ps.close();
+			return resultSet == 1;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception("Failed in getting constant: " + e.getMessage());
 		}
     }
     
-    public void delMeeting(String meetingID) throws Exception {
+    /**
+     * DELETE
+     * @param meetingID
+     * @throws Exception
+     */
+    public boolean delMeeting(String meetingID) throws Exception {
 		try {
-			Meeting meeting = null;
 			PreparedStatement ps = conn.prepareStatement("delete * FROM Meeting WHERE MeetingID=?;");
 			ps.setString(1, meetingID);
-			int resultSet = ps.executeUpdate();
+			int numAffected = ps.executeUpdate();
+			ps.close();
+			return (numAffected == 1);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -50,21 +59,24 @@ public class MeetingDAO {
 		}
     }
     
+    /**
+     * GET
+     * @param meetingID
+     * @return
+     * @throws Exception
+     */
 	public Meeting getMeeting(String meetingID) throws Exception {
-
 		try {
 			Meeting meeting = null;
 			PreparedStatement ps = conn.prepareStatement("SELECT * FROM Meeting WHERE MeetingID=?;");
 			ps.setString(1, meetingID);
 			ResultSet resultSet = ps.executeQuery();
-			
-			String ID = "";
+		
 			String timeSlotID = "";
 			String participantName = "";
 			String secretKey = "";
 
 			while (resultSet.next()) {
-				ID = resultSet.getString("MeetingID");
 				timeSlotID = resultSet.getString("timeSlotID");
 				participantName = resultSet.getString("participantName");
 				secretKey = resultSet.getString("secretKey");
@@ -72,38 +84,36 @@ public class MeetingDAO {
 			resultSet.close();
 			ps.close();
 			
-//			query list of time slots
-			PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM Meeting WHERE MeetingID=?;");
-			ps2.setString(1, meetingID);
+			// Query one associated time slot
+			PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM TimeSlot WHERE timeSlotID=?;");
+			ps2.setString(1, timeSlotID);
 			ResultSet resultSet2 = ps2.executeQuery();
+		
 			
-			String timeslotID = ""; 
 			Time startTime = null;
-//			int id = 0; no need for now
+			//int id = 0; no need for now
 			int meetingLength = 0;
-			String meeting_ID = "";
-			String dateID = ""; 
 			int organizerAvailable = 0;
 			
 			while (resultSet2.next()) {
-				timeslotID = resultSet2.getString("timeSlotID"); 
 				startTime = resultSet2.getTime("startTime");
 				//id = resultSet2.getInt("id"); 
 				meetingLength = resultSet2.getInt("meetingLength");
-				meeting_ID = resultSet2.getString("meetingID");
-				dateID = resultSet2.getString("DateID"); 
 				organizerAvailable = resultSet2.getInt("organizerAvailable");
 			}
 			
+			// get the time 
 			ScheduleTime time = new ScheduleTime(startTime.getTime());
-			TimeSlot ts = new TimeSlot(timeslotID, time, meetingLength, null, organizerAvailable == 1);
-			meeting = new Meeting(meeting_ID, ts, participantName, secretKey);
+			TimeSlot ts = new TimeSlot(timeSlotID, time, meetingLength, organizerAvailable == 1);
+			ts.setMeeting(meeting);
+			meeting = new Meeting(meetingID, participantName, secretKey);
+			meeting.setTimeSlot(ts);
 			resultSet2.close();
 			ps.close();
 			return meeting;
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new Exception("Failed in getting constant: " + e.getMessage());
+			throw new Exception("Failed in getting meeting: " + e.getMessage());
 		}
 	}
 	
