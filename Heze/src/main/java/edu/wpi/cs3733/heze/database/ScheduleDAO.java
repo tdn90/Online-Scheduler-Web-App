@@ -16,7 +16,7 @@ public class ScheduleDAO {
     }
     
     //TODO: implement this
-    public Schedule getSchedule(String id) throws Exception {
+    public Schedule getScheduleByID(String id) throws Exception {
     	try {
     		Schedule schedule = null;
     		PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedule WHERE scheduleID=?;");
@@ -70,6 +70,60 @@ public class ScheduleDAO {
     }
     
     //update
+    public Schedule getScheduleBySecretKey(String secretKey) throws Exception {
+    	try {
+    		Schedule schedule = null;
+    		PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedule WHERE secretKey=?;");
+			ps.setString(1, secretKey);
+			ResultSet resultSet = ps.executeQuery();
+			
+			String scheduleID = ""; 
+			String name = ""; 
+			int startTime = 0; 
+			int endTime = 0; 
+			int meetingDuration = 0; 
+
+			while (resultSet.next()) {
+				scheduleID = resultSet.getString("scheduleID");
+				name = resultSet.getString("name");
+				startTime = resultSet.getInt("startTime");
+				endTime = resultSet.getInt("endTime");
+				meetingDuration = resultSet.getInt("meetingLength");
+			}
+			resultSet.close();
+			ps.close();
+			schedule = new Schedule(scheduleID, secretKey, name, startTime, endTime, meetingDuration);
+			
+			PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM ScheduleDate WHERE scheduleID=?;");
+			ps2.setString(1, scheduleID);
+			ResultSet resultSet2 = ps2.executeQuery();
+			
+			while(resultSet2.next()) {
+				ScheduleDate sd = new ScheduleDateDAO().getScheduleDate(resultSet2.getString("dateID"));
+				/*
+				ScheduleDate sd = new ScheduleDate(resultSet2.getString("dateID"), resultSet2.getString("Date"));
+				PreparedStatement ps_TimeSlot = conn.prepareStatement("SELECT * FROM TimeSlot WHERE DateID=?;");
+				ps_TimeSlot.setString(1, resultSet2.getString("dateID"));
+				ResultSet resultSet_TimeSlot = ps_TimeSlot.executeQuery();
+				
+				while(resultSet_TimeSlot.next()) {
+					TimeSlotDAO tsd = new TimeSlotDAO();
+					sd.addSlot(tsd.getTimeSlot(resultSet_TimeSlot.getString("timeSlotID")));
+				}
+				resultSet_TimeSlot.close();
+				ps_TimeSlot.close();
+				*/
+				schedule.addDays(sd);
+			}
+			resultSet2.close();
+			ps2.close();
+            return schedule;
+        } catch (Exception e) {
+            throw new Exception("Failed to insert timeslot: " + e.getMessage());
+        }
+    }
+    
+    
     
     //TODO
     public boolean deleteSchedule(String id) throws Exception {
