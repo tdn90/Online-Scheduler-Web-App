@@ -8,6 +8,8 @@ public class ScheduleDate{
 	String date;
 	List<TimeSlot> slots;
 	
+	
+	
 	/**
 	 * 
 	 * @param id

@@ -20,6 +20,11 @@ public class Schedule {
 	int endTime; 
 	int meetingDuration; 
 	
+	public static Schedule createSchedule (String name, long startTime, long endTime, 
+			int meetingDuration, int startHour, int endHour) {
+		return null;
+	}
+	
 	public Schedule(String scheduleID, String schedule_secretKey, String name, int startTime,
 			int endTime, int meetingDuration) {
 		super();
