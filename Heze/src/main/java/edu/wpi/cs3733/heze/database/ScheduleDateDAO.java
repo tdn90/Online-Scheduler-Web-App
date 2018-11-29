@@ -54,6 +54,7 @@ public class ScheduleDateDAO {
             ps2.close();
             return scheduleDate;
         } catch (Exception e) {
+        	e.printStackTrace();
             throw new Exception("Failed to insert timeslot: " + e.getMessage());
         }
     }
@@ -102,6 +103,7 @@ public class ScheduleDateDAO {
             return (numAffected == 1);
 
         } catch (Exception e) {
+        	e.printStackTrace();
             throw new Exception("Failed to insert constant: " + e.getMessage());
         }
     }

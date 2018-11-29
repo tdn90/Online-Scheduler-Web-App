@@ -109,6 +109,7 @@ public class TimeSlotDAO {
              ps.execute();
              return true;
          } catch (Exception e) {
+        	 e.printStackTrace();
              throw new Exception("Failed to insert timeslot: " + e.getMessage());
          }
      }
