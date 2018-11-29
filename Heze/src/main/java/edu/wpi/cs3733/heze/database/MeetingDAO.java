@@ -109,7 +109,7 @@ public class MeetingDAO {
 			meeting = new Meeting(meetingID, participantName, secretKey);
 			meeting.setTimeSlot(ts);
 			resultSet2.close();
-			ps.close();
+			ps2.close();
 			return meeting;
 		} catch (Exception e) {
 			e.printStackTrace();
