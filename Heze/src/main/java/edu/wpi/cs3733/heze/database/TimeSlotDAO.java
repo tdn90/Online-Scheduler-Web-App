@@ -30,14 +30,14 @@ public class TimeSlotDAO {
     		ResultSet resultSet = ps.executeQuery();
     		
     		String timeslot_ID = "";
-    		Time start = null;
+    		int start = 0;
     		int meetingDuration = 0;
     		int available = 0;
     		
     		// at most one resultSet can be retrieved
     		while (resultSet.next()) {
     			timeslot_ID = resultSet.getString("timeSlotID");
-    			start = resultSet.getTime("startTime");
+    			start = resultSet.getInt("startTime");
     			meetingDuration = resultSet.getInt("meetingLength");
     			available = resultSet.getInt("organizerAvailable");
     		}
@@ -68,7 +68,7 @@ public class TimeSlotDAO {
     		}
     		
     		// construct the timeslot
-    		ScheduleTime startTime = new ScheduleTime(start.getTime());
+    		ScheduleTime startTime = new ScheduleTime(start);
     		timeslot = new TimeSlot(timeslot_ID, startTime, meetingDuration, available == 1);
     		timeslot.setMeeting(meeting);
     		
