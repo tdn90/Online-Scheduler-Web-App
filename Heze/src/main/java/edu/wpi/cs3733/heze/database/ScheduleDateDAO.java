@@ -81,6 +81,7 @@ public class ScheduleDateDAO {
             }
             return true;
         } catch (Exception e) {
+        	e.printStackTrace();
             throw new Exception("Failed to insert date: " + e.getMessage());
         }
     }

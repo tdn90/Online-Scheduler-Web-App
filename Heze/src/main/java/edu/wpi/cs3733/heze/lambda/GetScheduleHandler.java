@@ -11,6 +11,8 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
+import edu.wpi.cs3733.heze.database.ScheduleDAO;
+import edu.wpi.cs3733.heze.entity.Schedule;
 import edu.wpi.cs3733.heze.lambda.api.GetScheduleRequest;
 import edu.wpi.cs3733.heze.lambda.api.GetScheduleResponse;
 
@@ -80,10 +82,13 @@ public class GetScheduleHandler implements RequestStreamHandler {
 			//logger.log(req.toString());
 			logger.log(body);
 			
+			//Schedule s = new ScheduleDAO().getSchedule(body)
 			//logger.log("Get a schedule with the id: " + req.secretkey);
 
 			// compute proper response
 			response = new GetScheduleResponse(200);
+			logger.log(response.toString());
+			
 		}
 		
 		responseJson.put("body", new Gson().toJson(response));

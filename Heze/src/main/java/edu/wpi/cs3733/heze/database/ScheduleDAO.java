@@ -114,7 +114,8 @@ public class ScheduleDAO {
         	
         	return true;
     	} catch (Exception e) {
-    		throw new Exception("Failed to insert constant: " + e.getMessage());
+    		e.printStackTrace();
+    		throw new Exception("Failed to insert constant: " + e.toString());
     	}
     }
 }

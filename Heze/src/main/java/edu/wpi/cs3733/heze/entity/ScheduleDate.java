@@ -25,7 +25,7 @@ public class ScheduleDate{
 		ScheduleDate sd = new ScheduleDate(id, this_day);
 		LocalDateTime start = LocalDateTime.of(this_day.getYear(), this_day.getMonth(), this_day.getDayOfMonth(), startHour, 0);
 		LocalDateTime end = LocalDateTime.of(this_day.getYear(), this_day.getMonth(), this_day.getDayOfMonth(), endHour, 1);
-		for (; start.isBefore(end); start.plusMinutes(meetingDuration)) {
+		for (; start.isBefore(end); start = start.plusMinutes(meetingDuration)) {
 			// Add time slot to sd
 			int hour = start.getHour();
 			int minute = start.getMinute();
