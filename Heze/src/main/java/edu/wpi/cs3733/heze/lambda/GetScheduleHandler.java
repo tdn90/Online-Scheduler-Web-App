@@ -84,14 +84,20 @@ public class GetScheduleHandler implements RequestStreamHandler {
 			
 			//logger.log("Get a schedule with the id: " + req.secretkey);
 			
-			//Schedule s = new ScheduleDAO().getSchedule(body)
-			
-			if (s != null) {
-				response = new GetScheduleResponse(200);
+			try {
+				Schedule s = new ScheduleDAO().getScheduleBySecretKey(body);
+				if (s == null) {
+					response = new GetScheduleResponse(405);
+				} else {
+					response = new GetScheduleResponse(200, s);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				response = new GetScheduleResponse(410);
 			}
 			
-			// compute proper response
-			response = new GetScheduleResponse(200);
+			
 			logger.log(response.toString());
 			
 		}
