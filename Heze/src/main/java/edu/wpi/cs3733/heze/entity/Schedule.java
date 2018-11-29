@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 public class Schedule {
 	String scheduleID;
 	List<ScheduleDate> days; 
@@ -87,6 +94,15 @@ public class Schedule {
 
 	public void setMeetingDuration(int meetingDuration) {
 		this.meetingDuration = meetingDuration;
+	}
+	public JSONObject toJSON() throws ParseException {
+		GsonBuilder gsonBuilder = new GsonBuilder();  
+		gsonBuilder.serializeNulls();  
+		Gson gson = gsonBuilder.create();
+		
+		JSONParser parser = new JSONParser();
+		return (JSONObject)parser.parse(gson.toJson(this));
+		
 	}
 	
 	
