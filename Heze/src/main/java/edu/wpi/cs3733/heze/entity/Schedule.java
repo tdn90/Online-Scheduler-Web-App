@@ -46,17 +46,12 @@ public class Schedule {
 		LocalDateTime start = LocalDateTime.parse(startDay, DATEFORMATTER);
 		LocalDateTime end = LocalDateTime.parse(endDay, DATEFORMATTER);
 		end = end.plusMinutes(1);
-		//end = end.plusDays(1);
-		
-		List<ScheduleDate> all_days = null;
+
 		for (LocalDateTime currentDate = start; currentDate.isBefore(end); currentDate = currentDate.plusDays(1)) {
 			if (currentDate.getDayOfWeek() != java.time.DayOfWeek.SUNDAY && currentDate.getDayOfWeek() != java.time.DayOfWeek.SATURDAY) {
 				schedule.addDays(ScheduleDate.makeDay(currentDate, startHour, endHour, meetingDuration));
 			}
 		}
-		all_days = schedule.getDays();
-		Collections.sort(all_days);
-		schedule.setDays(all_days);
 		return schedule;
 	}
 	
