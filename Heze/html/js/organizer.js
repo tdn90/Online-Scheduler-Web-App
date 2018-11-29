@@ -138,7 +138,7 @@ $(document).ready(function () {
                                 meeting_grid_vue.hasKey = true;
                                 console.log("Eventually use this data: " + JSON.stringify(result))
                                 share_modal.secretKey = resulta.secretKey;
-                                share_modal.id = result.data.id;
+                                share_modal.id = result.data.scheduleID;
                                 $('#newModal').modal('hide')
                             } else {
                                 console.log("backend http code not 200")
@@ -187,9 +187,8 @@ $(document).ready(function () {
                                 self.showAlert = false;
                                 meeting_grid_vue.grid_data = result.data;
                                 meeting_grid_vue.hasKey = true;
-                                console.log("Eventually use this data: " + JSON.stringify(result))
                                 share_modal.secretKey = self.secretKey;
-                                share_modal.id = result.data.id;
+                                share_modal.id = result.data.scheduleID;
                                 $('#openModal').modal('hide')
                             } else {
                                 console.log("backend http code not 200")

@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import edu.wpi.cs3733.heze.database.ScheduleDAO;
 import edu.wpi.cs3733.heze.entity.Schedule;
@@ -101,8 +102,11 @@ public class GetScheduleHandler implements RequestStreamHandler {
 			logger.log(response.toString());
 			
 		}
-		
-		responseJson.put("body", new Gson().toJson(response));
+		GsonBuilder gsonBuilder = new GsonBuilder();  
+		gsonBuilder.serializeNulls();  
+		Gson gson = gsonBuilder.create();
+
+		responseJson.put("body", gson.toJson(response));
 		OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8");
         writer.write(responseJson.toJSONString());  
         writer.close();

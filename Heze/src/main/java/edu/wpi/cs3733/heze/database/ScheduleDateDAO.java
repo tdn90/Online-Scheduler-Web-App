@@ -28,7 +28,7 @@ public class ScheduleDateDAO {
     public ScheduleDate getScheduleDate(String scheduleDateID) throws Exception {
     	try {
     		ScheduleDate scheduleDate = null;
-            PreparedStatement ps = conn.prepareStatement("SELECT * FROM ScheduleDate WHERE dateID = ?;");
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM ScheduleDate WHERE dateID = ? ORDER BY Date;");
             ps.setString(1, scheduleDateID);
             ResultSet resultSet = ps.executeQuery();
             
