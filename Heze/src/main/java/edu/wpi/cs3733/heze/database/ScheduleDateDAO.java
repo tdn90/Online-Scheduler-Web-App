@@ -32,15 +32,15 @@ public class ScheduleDateDAO {
             ps.setString(1, scheduleDateID);
             ResultSet resultSet = ps.executeQuery();
             
-            Date date = null;
+            Timestamp date = null;
             
             // should only be one result
             while (resultSet.next()) {
-            	date = resultSet.getDate("Date");
+            	date = resultSet.getTimestamp("Date");
             }
             resultSet.close();
             ps.close();
-            scheduleDate = new ScheduleDate(scheduleDateID, date.toString());
+            scheduleDate = new ScheduleDate(scheduleDateID, date.toLocalDateTime());
             
             PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM TimeSlot WHERE DateID = ?;");
             ps2.setString(1, scheduleDateID);
@@ -70,7 +70,7 @@ public class ScheduleDateDAO {
     		// TODO: see if need to check whether schedule date already exists
             PreparedStatement ps = conn.prepareStatement("INSERT INTO ScheduleDate values (?, ?, ?);");
             ps.setString(1, date.getId());
-            ps.setDate(2, Date.valueOf(date.getDate()));
+            ps.setTimestamp(2, Timestamp.valueOf(date.getDate()));
             ps.setString(3, scheduleID);
             ps.execute();
             

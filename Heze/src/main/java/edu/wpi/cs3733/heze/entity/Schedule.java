@@ -1,5 +1,7 @@
 package edu.wpi.cs3733.heze.entity;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -11,6 +13,8 @@ import org.json.simple.parser.ParseException;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import edu.wpi.cs3733.heze.util.Utilities;
+
 public class Schedule {
 	String scheduleID;
 	List<ScheduleDate> days; 
@@ -20,9 +24,24 @@ public class Schedule {
 	int endTime; 
 	int meetingDuration; 
 	
-	public static Schedule createSchedule (String name, long startTime, long endTime, 
+	public static Schedule createSchedule (String name, String startDay, String endDay, 
 			int meetingDuration, int startHour, int endHour) {
-		return null;
+		String id = Utilities.generateKey(10);
+		String secretKey = Utilities.generateKey(30);
+		Schedule schedule = new Schedule(id, secretKey, name, startHour, endHour, meetingDuration);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+		/* do a for loop to create all days between startDay and EndDay (inclusive)
+		 * and add to schedule
+		 */
+		LocalDateTime start = LocalDateTime.parse(startDay, formatter);
+		LocalDateTime end = LocalDateTime.parse(endDay, formatter);
+		
+		for (LocalDateTime currentDate = start; currentDate.isBefore(end); currentDate = currentDate.plusDays(1)) {
+			if (currentDate.getDayOfWeek() != java.time.DayOfWeek.SUNDAY && currentDate.getDayOfWeek() != java.time.DayOfWeek.SATURDAY) {
+				schedule.addDays(ScheduleDate.makeDay(currentDate, startHour, endHour, meetingDuration));
+			}
+		}
+		return schedule;
 	}
 	
 	public Schedule(String scheduleID, String schedule_secretKey, String name, int startTime,
