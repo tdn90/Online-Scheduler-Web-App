@@ -29,12 +29,17 @@ public class ScheduleDAO {
 			int endTime = 0; 
 			int meetingDuration = 0; 
 
+			boolean hasSchedule = false;
 			while (resultSet.next()) {
+				hasSchedule = true;
 				schedule_secretKey = resultSet.getString("secretKey");
 				name = resultSet.getString("name");
 				startTime = resultSet.getInt("startTime");
 				endTime = resultSet.getInt("endTime");
 				meetingDuration = resultSet.getInt("meetingLength");
+			}
+			if (!hasSchedule) {
+				return null;
 			}
 			resultSet.close();
 			ps.close();
@@ -83,12 +88,17 @@ public class ScheduleDAO {
 			int endTime = 0; 
 			int meetingDuration = 0; 
 
+			boolean hasSchedule = false; 
 			while (resultSet.next()) {
+				hasSchedule = true;
 				scheduleID = resultSet.getString("scheduleID");
 				name = resultSet.getString("name");
 				startTime = resultSet.getInt("startTime");
 				endTime = resultSet.getInt("endTime");
 				meetingDuration = resultSet.getInt("meetingLength");
+			}
+			if (!hasSchedule) {
+				return null;
 			}
 			resultSet.close();
 			ps.close();
