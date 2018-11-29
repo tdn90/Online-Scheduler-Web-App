@@ -72,7 +72,7 @@ public class GetScheduleHandler implements RequestStreamHandler {
 			}
 		} catch (ParseException pe) {
 			logger.log("Exception parsing:" + pe.toString());
-			response = new GetScheduleResponse(409);  // unable to process input
+			response = new GetScheduleResponse(405);  // unable to process input
 	        processed = true;
 	        body = null;
 		}
@@ -82,9 +82,14 @@ public class GetScheduleHandler implements RequestStreamHandler {
 			//logger.log(req.toString());
 			logger.log(body);
 			
-			//Schedule s = new ScheduleDAO().getSchedule(body)
 			//logger.log("Get a schedule with the id: " + req.secretkey);
-
+			
+			//Schedule s = new ScheduleDAO().getSchedule(body)
+			
+			if (s != null) {
+				response = new GetScheduleResponse(200);
+			}
+			
 			// compute proper response
 			response = new GetScheduleResponse(200);
 			logger.log(response.toString());

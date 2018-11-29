@@ -65,7 +65,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 			}
 		} catch (ParseException pe) {
 			logger.log("Exception parsing:" + pe.toString());
-			response = new CreateScheduleResponse("NOID", "NOKEY", 410);  // unable to process input
+			response = new CreateScheduleResponse("NOID", "NOKEY", 405);  // unable to process input
 	        processed = true;
 	        body = null;
 		}
@@ -85,7 +85,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				logger.log("Exception writing to DB: " + e.toString());
-				response = new CreateScheduleResponse("NOID", "NOKEY", 410);
+				response = new CreateScheduleResponse("NOID", "NOKEY", 405);
 			}
 			//logger.log("Create a schedule with the name: " + req.name);
 
