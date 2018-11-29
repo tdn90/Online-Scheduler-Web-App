@@ -6,9 +6,9 @@ public class Meeting {
 	String participant;
 	String secretKey;
 	
-	public Meeting(String id, TimeSlot tl, String participant, String secretKey) {
+	public Meeting(String id, String participant, String secretKey) {
 		this.id = id;
-		this.tl = tl;
+		this.tl = null;
 		this.participant = participant;
 		this.secretKey = secretKey;
 	}
@@ -21,11 +21,11 @@ public class Meeting {
 		this.id = id;
 	}
 
-	public TimeSlot getTl() {
+	public TimeSlot getTimeSlot() {
 		return tl;
 	}
 
-	public void setTl(TimeSlot tl) {
+	public void setTimeSlot(TimeSlot tl) {
 		this.tl = tl;
 	}
 
