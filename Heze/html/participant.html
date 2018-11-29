@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Schedule Participant</title>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.23/moment-timezone.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+  <script src="js/component_schedulegrid.js"></script>
+  <script src="js/participant.js"></script>
+</head>
+
+<body>
+  <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+    <h5 class="my-0 mr-md-auto font-weight-normal">Meeting Scheduler</h5>
+    <nav class="my-2 my-md-0 mr-md-3">
+    </nav>
+    <button class="btn btn-outline-primary justify-content-center align-content-between d-flex" data-toggle="modal"
+      data-target="#openModal">
+      <i class="material-icons mr-1">search</i>
+      <span>Open Schedule</span>
+    </button>&nbsp;&nbsp;&nbsp;&nbsp;
+  </div>
+  <div class="container">
+    <h1>Participant</h1>
+    <hr />
+    <div id="meeting-sechedule-holder-vue">
+      <meeting-schedule-grid v-if="has_data" mode="participant" v-bind:value="grid_data"></meeting-schedule-grid>
+    </div>
+  </div>
+
+  <!------------>
+  <!-- Modals -->
+  <!------------>
+
+  <!-- Open schedule modal -->
+  <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="openModal" id="openModal" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Find your meeting schedule</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Please enter the meeting id that the organizer gave you.</p>
+          <div class="alert alert-danger" v-if="showAlert">
+            <strong>Whoops! </strong>Please enter a valid meeting schedule id
+          </div>
+          <form id="findMeetingSchedule">
+            <div class="form-group">
+              <label for="meetingScheduleKey">Meeting Secret Code</label>
+              <input type="text" class="form-control" id="meetingScheduleKey" aria-describedby="meetingScheduleKey"
+                placeholder="AABBCCDDEE" v-model="key">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-primary justify-content-center align-content-between d-flex" v-on:click="submit">
+            <i class="material-icons mr-1">search</i>
+            <span>Find Schedule</span>
+          </button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -13,6 +13,7 @@ import com.google.gson.Gson;
 
 import edu.wpi.cs3733.heze.lambda.api.CreateScheduleRequest;
 import edu.wpi.cs3733.heze.lambda.api.CreateScheduleResponse;
+import edu.wpi.cs3733.heze.util.Utilities;
 
 import com.amazonaws.services.lambda.runtime.LambdaLogger;
 
@@ -73,9 +74,10 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 			logger.log(req.toString());
 
 			logger.log("Create a schedule with the name: " + req.name);
-
+			String randomID = Utilities.generateKey(6);
+			String randomKey = Utilities.generateKey(6);
 			// compute proper response
-			response = new CreateScheduleResponse("FAKEID", "FAKEKEY", 200);
+			response = new CreateScheduleResponse(randomID, randomKey, 200);
 		}
 		
 		responseJson.put("body", new Gson().toJson(response));

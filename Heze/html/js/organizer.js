@@ -13,14 +13,6 @@ function wdayonly(d, reverse = false) {
     return d
 }
 
-function loadSchedule(secretKey) {
-    window.meeting_grid_vue.loadFromSecret(secretKey)
-}
-
-function loadFromPopup() {
-    console.log($("#meetingScheduleSecretCode").val())
-}
-
 $(document).ready(function () {
     console.log("Start")
     var meeting_create_vue = new Vue({
@@ -132,12 +124,32 @@ $(document).ready(function () {
                     });
                 }
             },
-            didSubmit: function(result) {
-                if (result.httpCode == 200) {
-                    this.hasKey = true
+            didSubmit: function(resulta) {
+                if (resulta.httpCode == 200) {
                     this.$refs.form.classList.remove('was-validated');
-                    loadSchedule(result.secretKey)
-                    $('#newModal').modal('hide')
+                    var get_url = "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/getschedule?secretKey=" + resulta.secretKey;
+                    var self = this
+                    $.ajax({url: get_url, 
+                        type: 'GET',
+                        success: function(result){
+                            if (result.httpcode == 200) {
+                                self.showAlert = false;
+                                meeting_grid_vue.grid_data = result.data;
+                                meeting_grid_vue.hasKey = true;
+                                console.log("Eventually use this data: " + JSON.stringify(result))
+                                share_modal.secretKey = resulta.secretKey;
+                                share_modal.id = result.data.id;
+                                $('#newModal').modal('hide')
+                            } else {
+                                console.log("backend http code not 200")
+                                self.showAlert = true;
+                            }
+                        },
+                        error: function(resp) {
+                            console.log("ERROR, ", resp)
+                            self.showAlert = true;
+                        },
+                    });
                 } else {
                     alert("Error")
                 }
@@ -150,77 +162,6 @@ $(document).ready(function () {
         data: {
             hasKey: false,
             grid_data: {}
-        },
-        methods: {
-            loadFromSecret: function (key) {
-                //TODO: check secret key
-                console.log("Would load with secret key " + key)
-                this.grid_data = {
-                    startTime: 9,
-                    endTime:   17,
-                    meetingDuration: 45,
-                    id: "asdasdasd",
-                    dates: [
-                        {
-                            date: 1543276800,
-                            id: "asd",
-                            timeslots: [
-                                {
-                                    id:"dsa",
-                                    start:1543309200,
-                                    organizerAvailable: true,
-                                    meeting: {
-                                        id: "asdasdasd",
-                                        participant: "John Doe"
-                                    }
-                                },
-                                {
-                                    id:"dsa",
-                                    start:1543395600,
-                                    organizerAvailable: true,
-                                    meeting: null
-                                }
-                            ]
-                        },
-                        {
-                            date: 1543363200,
-                            id: "asd",
-                            timeslots: [
-                                {
-                                    id:"dsa",
-                                    start:1543395600,
-                                    organizerAvailable: true,
-                                    meeting: {
-                                        id: "asdasdasd",
-                                        participant: "Jane Doe"
-                                    }
-                                },
-                                {
-                                    id:"dsa",
-                                    start:1543395600,
-                                    organizerAvailable: true,
-                                    meeting: null
-                                }
-                            ]
-                        },
-                    ]
-                }
-                this.hasKey = true;
-                
-                var get_url = "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/getschedule?secretKey=" + key;
-                var self = this
-                $.ajax({url: get_url, 
-                    type: 'GET',
-                    success: function(result){
-                        console.log("Eventually use this data: " + JSON.stringify(result))
-                        share_modal.secretKey = key;
-                        share_modal.id = self.grid_data.id;
-                    },
-                    error: function(resp) {
-                        alert("Error!")
-                    },
-                });
-            }
         }
     });
 
@@ -236,8 +177,30 @@ $(document).ready(function () {
                     this.showAlert = true
                 } else {
                     this.showAlert = false
-                    loadSchedule(this.secretKey)
-                    $('#openModal').modal('hide')
+                    
+                    var get_url = "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/getschedule?secretKey=" + this.secretKey;
+                    var self = this
+                    $.ajax({url: get_url, 
+                        type: 'GET',
+                        success: function(result){
+                            if (result.httpcode == 200) {
+                                self.showAlert = false;
+                                meeting_grid_vue.grid_data = result.data;
+                                meeting_grid_vue.hasKey = true;
+                                console.log("Eventually use this data: " + JSON.stringify(result))
+                                share_modal.secretKey = self.secretKey;
+                                share_modal.id = result.data.id;
+                                $('#openModal').modal('hide')
+                            } else {
+                                console.log("backend http code not 200")
+                                self.showAlert = true;
+                            }
+                        },
+                        error: function(resp) {
+                            console.log("ERROR, ", resp)
+                            self.showAlert = true;
+                        },
+                    });
                 }
             }
         }
