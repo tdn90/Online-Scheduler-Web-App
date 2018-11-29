@@ -1,4 +1,5 @@
 package edu.wpi.cs3733.heze.entity;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -9,11 +10,16 @@ public class ScheduleDate{
 	Schedule schedule;
 	List<TimeSlot> slots;
 	
-	public ScheduleDate(String id, Date date, Schedule schedule, List<TimeSlot> slots) {
+	public ScheduleDate(String id, Date date, Schedule schedule) {
 		this.id = id;
 		this.date = date;
 		this.schedule = schedule;
-		this.slots = slots;
+		this.slots = new ArrayList<>();
+	}
+	
+	public boolean addSlot(TimeSlot slot) {
+		slots.add(slot);
+		return false;
 	}
 	
 	/** Convenient iteration over pieces. */
