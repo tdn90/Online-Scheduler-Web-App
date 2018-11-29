@@ -45,7 +45,7 @@ public class Schedule {
 		 */
 		LocalDateTime start = LocalDateTime.parse(startDay, DATEFORMATTER);
 		LocalDateTime end = LocalDateTime.parse(endDay, DATEFORMATTER);
-		end.plusDays(1);
+		end.plusMinutes(1);
 		
 		for (LocalDateTime currentDate = start; currentDate.isBefore(end); currentDate = currentDate.plusDays(1)) {
 			if (currentDate.getDayOfWeek() != java.time.DayOfWeek.SUNDAY && currentDate.getDayOfWeek() != java.time.DayOfWeek.SATURDAY) {

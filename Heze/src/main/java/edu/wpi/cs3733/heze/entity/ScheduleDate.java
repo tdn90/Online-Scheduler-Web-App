@@ -74,7 +74,6 @@ public class ScheduleDate implements Comparable<ScheduleDate>{
 
 	@Override
 	public int compareTo(ScheduleDate anotherDay) {
-		// TODO Auto-generated method stub
 		if (this.date.isBefore(anotherDay.date)) {
 			return -1; 
 		}
