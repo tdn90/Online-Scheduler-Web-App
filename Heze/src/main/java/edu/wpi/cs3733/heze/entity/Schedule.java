@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -69,7 +68,6 @@ public class Schedule {
 	
 	public void addDays(ScheduleDate day) {
 		this.days.add(day);
-		Collections.sort(this.days);
 	}
 	
 	public Iterator<ScheduleDate> daysIt() {

@@ -72,6 +72,7 @@ public class ScheduleDate implements Comparable<ScheduleDate>{
 		this.slots = slots;
 	}
 
+	/*
 	@Override
 	public int compareTo(ScheduleDate anotherDay) {
 		if (this.date.isBefore(anotherDay.date)) {
@@ -82,6 +83,11 @@ public class ScheduleDate implements Comparable<ScheduleDate>{
 		}
 		else return 0;
 	}
+	*/
 	
+	@Override
+	public int compareTo(ScheduleDate anotherDay) {
+		return this.date.compareTo(anotherDay.date);
+	}
 	
 }
