@@ -1,12 +1,8 @@
 package edu.wpi.cs3733.heze.database;
 
 import java.sql.*;
-import java.util.Date;
-import java.util.List;
-
 import edu.wpi.cs3733.heze.entity.Schedule;
 import edu.wpi.cs3733.heze.entity.ScheduleDate;
-import edu.wpi.cs3733.heze.entity.TimeSlot;
 
 public class ScheduleDAO {
 	java.sql.Connection conn;
@@ -34,7 +30,7 @@ public class ScheduleDAO {
 			int meetingDuration = 0; 
 
 			while (resultSet.next()) {
-				schedule_secretKey = resultSet.getString("scheduleID");
+				schedule_secretKey = resultSet.getString("secretKey");
 				name = resultSet.getString("name");
 				startTime = resultSet.getInt("startTime");
 				endTime = resultSet.getInt("endTime");
@@ -49,8 +45,9 @@ public class ScheduleDAO {
 			ResultSet resultSet2 = ps2.executeQuery();
 			
 			while(resultSet2.next()) {
+				ScheduleDate sd = new ScheduleDateDAO().getScheduleDate(resultSet2.getString("dateID"));
+				/*
 				ScheduleDate sd = new ScheduleDate(resultSet2.getString("dateID"), resultSet2.getString("Date"));
-				
 				PreparedStatement ps_TimeSlot = conn.prepareStatement("SELECT * FROM TimeSlot WHERE DateID=?;");
 				ps_TimeSlot.setString(1, resultSet2.getString("dateID"));
 				ResultSet resultSet_TimeSlot = ps_TimeSlot.executeQuery();
@@ -61,12 +58,11 @@ public class ScheduleDAO {
 				}
 				resultSet_TimeSlot.close();
 				ps_TimeSlot.close();
-				
+				*/
 				schedule.addDays(sd);
 			}
 			resultSet2.close();
 			ps2.close();
-			
             return schedule;
         } catch (Exception e) {
             throw new Exception("Failed to insert timeslot: " + e.getMessage());
@@ -91,31 +87,34 @@ public class ScheduleDAO {
     
     //TODO
     public boolean createSchedule(Schedule schedule) throws Exception {
-        PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedule WHERE name = ?;");
-        ps.setString(1, schedule.getScheduleID());
-        ResultSet resultSet = ps.executeQuery();
-        
-        // already present?
-        while (resultSet.next()) {
-            resultSet.close();
-            return false;
-        }
-    	
-    	ps = conn.prepareStatement("INSERT INTO Schedule values(?,?,?,?,?,?);");
-    	ps.setString(1, schedule.getScheduleID());
-    	ps.setString(2, schedule.getSchedule_secretKey());
-    	ps.setString(3, schedule.getName());
-    	ps.setInt(4, schedule.getStartTime());
-    	ps.setInt(5, schedule.getEndTime());
-    	ps.setInt(6, schedule.getMeetingDuration());
-    	ps.execute();
-    	
-    	ScheduleDateDAO sdd = new ScheduleDateDAO();
-    	for(ScheduleDate sd : schedule.getDays()) {
-    		sdd.addScheduleDate(sd, sd.getId());
+    	try {
+    		PreparedStatement ps = conn.prepareStatement("SELECT * FROM Schedule WHERE scheduleID = ?;");
+            ps.setString(1, schedule.getScheduleID());
+            ResultSet resultSet = ps.executeQuery();
+            
+            // already present?
+            while (resultSet.next()) {
+                resultSet.close();
+                return false;
+            }
+        	
+        	ps = conn.prepareStatement("INSERT INTO Schedule values(?,?,?,?,?,?);");
+        	ps.setString(1, schedule.getScheduleID());
+        	ps.setString(2, schedule.getSchedule_secretKey());
+        	ps.setString(3, schedule.getName());
+        	ps.setInt(4, schedule.getStartTime());
+        	ps.setInt(5, schedule.getEndTime());
+        	ps.setInt(6, schedule.getMeetingDuration());
+        	ps.execute();
+        	
+        	ScheduleDateDAO sdd = new ScheduleDateDAO();
+        	for(ScheduleDate sd : schedule.getDays()) {
+        		sdd.addScheduleDate(sd, schedule.getScheduleID());
+        	}
+        	
+        	return true;
+    	} catch (Exception e) {
+    		throw new Exception("Failed to insert constant: " + e.getMessage());
     	}
-    	
-    	return true;
-    	
     }
 }
