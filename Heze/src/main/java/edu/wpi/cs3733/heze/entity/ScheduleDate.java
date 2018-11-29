@@ -6,7 +6,7 @@ import java.util.List;
 
 import edu.wpi.cs3733.heze.util.Utilities;
 
-public class ScheduleDate{
+public class ScheduleDate implements Comparable<ScheduleDate>{
 	String id;
 	LocalDateTime date;
 	public LocalDateTime getDate() {
@@ -70,6 +70,18 @@ public class ScheduleDate{
 
 	public void setSlots(List<TimeSlot> slots) {
 		this.slots = slots;
+	}
+
+	@Override
+	public int compareTo(ScheduleDate anotherDay) {
+		// TODO Auto-generated method stub
+		if (this.date.isBefore(anotherDay.date)) {
+			return -1; 
+		}
+		else if (this.date.isAfter(anotherDay.date)) {
+			return 1;
+		}
+		else return 0;
 	}
 	
 	
