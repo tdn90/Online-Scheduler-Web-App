@@ -15,26 +15,69 @@ public class ScheduleDateDAO {
     	}
     }
     
-    // get, add, update, delete
+    // no update needed
     
     //TODO: implement this
-    public ScheduleDate getScheduleDate(String id) throws Exception {
+    public ScheduleDate getScheduleDate(String scheduleDateID) throws Exception {
     	try {
-    		ScheduleDate date = null;
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO TimeSlot (timeSlotID, startTime, meetingLength, DateID, organizerAvailable) values (?, ?, ?, ?, ?);");
-            return date;
+    		ScheduleDate scheduleDate = null;
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM ScheduleDate WHERE dateID = ?;");
+            ps.setString(1, scheduleDateID);
+            ResultSet resultSet = ps.executeQuery();
+            
+            String date = "";
+            String scheduleID = "";
+            
+            // should only be one result
+            while (resultSet.next()) {
+            	resultSet.getString("Date");
+            	resultSet.getString("scheduleID");
+            }
+            
+            return scheduleDate;
         } catch (Exception e) {
             throw new Exception("Failed to insert timeslot: " + e.getMessage());
         }
     }
     
-    //TODO: implement this
-    public boolean addScheduleDate(ScheduleDate date) throws Exception {
-    	return false;
+    /**
+     * ADD
+     * @param date
+     * @param scheduleID
+     * @return
+     * @throws Exception
+     */
+    public boolean addScheduleDate(ScheduleDate date, String scheduleID) throws Exception {
+    	try {
+    		// TODO: see if need to check whether schedule date already exists
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO ScheduleDate values (?, ?, ?);");
+            ps.setString(1, date.getId());
+            ps.setString(2, date.getDate());
+            ps.setString(3, scheduleID);
+            ps.execute();
+            return true;
+        } catch (Exception e) {
+            throw new Exception("Failed to insert date: " + e.getMessage());
+        }
     }
     
-    //TODO:;
+    /**
+     * DELETE
+     * @param id
+     * @return
+     * @throws Exception
+     */
     public boolean deleteScheduleDate(String id) throws Exception {
-    	return false;
+    	try {
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM ScheduleDate WHERE dateID = ?;");
+            ps.setString(1, id);
+            int numAffected = ps.executeUpdate();
+            ps.close();
+            
+            return (numAffected == 1);
+
+        } catch (Exception e) {
+            throw new Exception("Failed to insert constant: " + e.getMessage());
+        }
     }
 }

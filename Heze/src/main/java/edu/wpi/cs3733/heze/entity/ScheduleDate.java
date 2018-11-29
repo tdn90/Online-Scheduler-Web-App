@@ -6,7 +6,6 @@ import java.util.List;
 public class ScheduleDate{
 	String id;
 	String date;
-	Schedule schedule;
 	List<TimeSlot> slots;
 	
 	/**
@@ -15,10 +14,9 @@ public class ScheduleDate{
 	 * @param date: String representation of date in yyyy-mm-dd format
 	 * @param schedule
 	 */
-	public ScheduleDate(String id, String date, Schedule schedule) {
+	public ScheduleDate(String id, String date) {
 		this.id = id;
 		this.date = date;
-		this.schedule = schedule;
 		this.slots = new ArrayList<>();
 	}
 	
@@ -40,20 +38,12 @@ public class ScheduleDate{
 		this.id = id;
 	}
 
-	public Date getDate() {
+	public String getDate() {
 		return date;
 	}
 
-	public void setDate(Date date) {
+	public void setDate(String date) {
 		this.date = date;
-	}
-
-	public Schedule getSchedule() {
-		return schedule;
-	}
-
-	public void setSchedule(Schedule schedule) {
-		this.schedule = schedule;
 	}
 
 	public List<TimeSlot> getSlots() {
