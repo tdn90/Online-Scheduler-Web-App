@@ -159,6 +159,7 @@ $(document).ready(function () {
                     startTime: 9,
                     endTime:   17,
                     meetingDuration: 45,
+                    id: "asdasdasd",
                     dates: [
                         {
                             date: 1543276800,
@@ -212,6 +213,8 @@ $(document).ready(function () {
                     type: 'GET',
                     success: function(result){
                         console.log("Eventually use this data: " + JSON.stringify(result))
+                        share_modal.secretKey = key;
+                        share_modal.id = self.grid_data.id;
                     },
                     error: function(resp) {
                         alert("Error!")
@@ -239,6 +242,23 @@ $(document).ready(function () {
             }
         }
     });
+
+    window.share_modal = new Vue({
+        el: '#shareModal',
+        data: {
+            secretKey: "",
+            id: ""
+        },
+        watch: {
+            secretKey: function(val, old) {
+                if (this.secretKey != "") {
+                    $("#shareButton").show()
+                } else {
+                    $("#shareButton").hide()
+                }
+            }
+        }
+    })
 
     //TODO: Delete
     //loadSchedule("AABBCCDDEE")

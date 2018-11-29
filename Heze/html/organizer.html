@@ -33,11 +33,13 @@
       <i class="material-icons mr-1">search</i>
       <span>Open Schedule</span>
     </button>&nbsp;&nbsp;&nbsp;&nbsp;
-    <button class="btn btn-outline-primary justify-content-center align-content-between d-flex" data-toggle="modal"
-      data-target="#shareModal">
-      <i class="material-icons mr-1">share</i>
-      <span>Share</span>
-    </button>
+    <div style="display: none;" id="shareButton">
+      <button class="btn btn-outline-primary justify-content-center align-content-between d-flex" data-toggle="modal"
+        data-target="#shareModal">
+        <i class="material-icons mr-1">share</i>
+        <span>Share</span>
+      </button>
+    </div>
   </div>
   <div class="container">
     <h1>Organizer</h1>
@@ -121,7 +123,7 @@
                 <select class="form-control" id="meetingScheduleEndHour" v-model="endselected" required>
                   <option v-for="option in options" v-bind:value="option.value" :disabled="!option.e_enable">
                     {{ option.text }}
-                  </option>
+                  <git rm -r --cached ./option>
                 </select>
               </div>
             </form>
@@ -149,8 +151,9 @@
           </button>
         </div>
         <div class="modal-body">
-          <p>Shareable Meeting Schedule Code: <strong>ABCDE</strong></p>
-          <p>Participants can go diretly to your schedule with <kbd>http://example.com/participant.html?id=ABCDE</kbd></p>
+          <p>Your secret key is {{secretKey}}. Don't share your secret key with anyone.</p>
+          <p>Shareable Meeting Schedule Code: <strong>{{id}}</strong></p>
+          <p>Participants can go diretly to your schedule with <kbd>http://example.com/participant.html?id={{id}}</kbd></p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
