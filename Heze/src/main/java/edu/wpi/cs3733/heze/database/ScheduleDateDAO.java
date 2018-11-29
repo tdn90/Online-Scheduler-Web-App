@@ -46,7 +46,7 @@ public class ScheduleDateDAO {
             ps2.setString(1, scheduleDateID);
             ResultSet resultSet2 = ps2.executeQuery();
             
-            while (resultSet.next()) {
+            while (resultSet2.next()) {
             	String timeSlotID = resultSet2.getString("timeSlotID");
             	scheduleDate.addSlot(new TimeSlotDAO().getTimeSlot(timeSlotID));
             }
