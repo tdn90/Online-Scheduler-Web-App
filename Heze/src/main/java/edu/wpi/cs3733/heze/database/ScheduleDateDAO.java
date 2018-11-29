@@ -50,8 +50,8 @@ public class ScheduleDateDAO {
             	String timeSlotID = resultSet2.getString("timeSlotID");
             	scheduleDate.addSlot(new TimeSlotDAO().getTimeSlot(timeSlotID));
             }
-            ps2.close();
             resultSet2.close();
+            ps2.close();
             return scheduleDate;
         } catch (Exception e) {
             throw new Exception("Failed to insert timeslot: " + e.getMessage());
