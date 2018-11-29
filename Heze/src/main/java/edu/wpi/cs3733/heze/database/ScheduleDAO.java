@@ -45,7 +45,7 @@ public class ScheduleDAO {
 			ps.close();
 			schedule = new Schedule(id, schedule_secretKey, name, startTime, endTime, meetingDuration);
 			
-			PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM ScheduleDate WHERE scheduleID=?;");
+			PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM ScheduleDate WHERE scheduleID=? ORDER BY Date;");
 			ps2.setString(1, id);
 			ResultSet resultSet2 = ps2.executeQuery();
 			
@@ -105,7 +105,7 @@ public class ScheduleDAO {
 			ps.close();
 			schedule = new Schedule(scheduleID, secretKey, name, startTime, endTime, meetingDuration);
 			
-			PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM ScheduleDate WHERE scheduleID=?;");
+			PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM ScheduleDate WHERE scheduleID=? ORDER BY Date;");
 			ps2.setString(1, scheduleID);
 			ResultSet resultSet2 = ps2.executeQuery();
 			
