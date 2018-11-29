@@ -7,13 +7,13 @@ public class TimeSlot {
 	Meeting meeting; 
 	boolean organizerAvailable; 
 	
-	public TimeSlot(String timeslotID, ScheduleTime startTime, int meetingDuration, Meeting meeting,
+	public TimeSlot(String timeslotID, ScheduleTime startTime, int meetingDuration,
 			boolean organizerAvailable) {
 		super();
 		this.timeslotID = timeslotID;
 		this.startTime = startTime;
 		this.meetingDuration = meetingDuration;
-		this.meeting = meeting;
+		this.meeting = null;
 		this.organizerAvailable = organizerAvailable;
 	}
 	
