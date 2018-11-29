@@ -1,5 +1,7 @@
 package edu.wpi.cs3733.heze.entity;
 
+import edu.wpi.cs3733.heze.util.Utilities;
+
 public class TimeSlot {
 	String timeslotID;
 	ScheduleTime startTime; 
@@ -7,13 +9,19 @@ public class TimeSlot {
 	Meeting meeting; 
 	boolean organizerAvailable; 
 	
-	public TimeSlot(String timeslotID, ScheduleTime startTime, int meetingDuration, Meeting meeting,
+	public static TimeSlot makeTimeSlot(ScheduleTime startTime, int meetingDuration) {
+		String id = Utilities.generateKey(30);
+		TimeSlot ts = new TimeSlot(id, startTime, meetingDuration, false);
+		return ts;
+	}
+	
+	public TimeSlot(String timeslotID, ScheduleTime startTime, int meetingDuration,
 			boolean organizerAvailable) {
 		super();
 		this.timeslotID = timeslotID;
 		this.startTime = startTime;
 		this.meetingDuration = meetingDuration;
-		this.meeting = meeting;
+		this.meeting = null;
 		this.organizerAvailable = organizerAvailable;
 	}
 	

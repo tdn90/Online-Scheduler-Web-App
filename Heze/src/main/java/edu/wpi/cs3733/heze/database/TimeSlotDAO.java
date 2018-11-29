@@ -16,6 +16,12 @@ public class TimeSlotDAO {
     	}
     }
     
+    /**
+     * GET
+     * @param timeslotID
+     * @return
+     * @throws Exception
+     */
     public TimeSlot getTimeSlot(String timeslotID) throws Exception {
     	try {
     		TimeSlot timeslot = null;
@@ -24,22 +30,22 @@ public class TimeSlotDAO {
     		ResultSet resultSet = ps.executeQuery();
     		
     		String timeslot_ID = "";
-    		Time start = null;
+    		int start = 0;
     		int meetingDuration = 0;
-    		Meeting meeting = null;
     		int available = 0;
     		
     		// at most one resultSet can be retrieved
     		while (resultSet.next()) {
     			timeslot_ID = resultSet.getString("timeSlotID");
-    			start = resultSet.getTime("startTime");
+    			start = resultSet.getInt("startTime");
     			meetingDuration = resultSet.getInt("meetingLength");
     			available = resultSet.getInt("organizerAvailable");
     		}
     		resultSet.close();
     		ps.close();
     		
-    		
+    		// Attempt to get meeting associated with time slot above
+    		Meeting meeting = null;
     		PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM Meeting WHERE timeSlotID=?;");
     		ps2.setString(1,  timeslotID);
     		ResultSet resultSet2 = ps2.executeQuery();
@@ -58,14 +64,16 @@ public class TimeSlotDAO {
     		
     		// There is a meeting in this timeslot
     		if (!isEmpty) {
-    			meeting = new Meeting(meeting_ID, null, participant, secretKey);
+    			meeting = new Meeting(meeting_ID, participant, secretKey);
     		}
+    		
     		// construct the timeslot
-    		ScheduleTime startTime = new ScheduleTime(start.getTime());
-    		timeslot = new TimeSlot(timeslot_ID, startTime, meetingDuration, meeting, available == 1);
+    		ScheduleTime startTime = new ScheduleTime(start);
+    		timeslot = new TimeSlot(timeslot_ID, startTime, meetingDuration, available == 1);
+    		timeslot.setMeeting(meeting);
     		
     		if (meeting != null) {
-    			meeting.setTl(timeslot);
+    			meeting.setTimeSlot(timeslot);
     		}
     		
     		resultSet2.close();
@@ -82,9 +90,16 @@ public class TimeSlotDAO {
      * dates will also be deleted, which case timeslot to delete
      */
     
-    
+    /**
+     * ADD
+     * @param timeslot
+     * @param dateID
+     * @return
+     * @throws Exception
+     */
      public boolean addTimeSlot(TimeSlot timeslot, String dateID) throws Exception {
     	 try {
+    		 //TODO: decide whether to add a check to see if timeslot already existed
              PreparedStatement ps = conn.prepareStatement("INSERT INTO TimeSlot (timeSlotID, startTime, meetingLength, DateID, organizerAvailable) values (?, ?, ?, ?, ?);");
              ps.setString(1, timeslot.getTimeslotID());
              ps.setString(2, "" + timeslot.getStartTime().convertToMilli());
@@ -94,8 +109,33 @@ public class TimeSlotDAO {
              ps.execute();
              return true;
          } catch (Exception e) {
+        	 e.printStackTrace();
              throw new Exception("Failed to insert timeslot: " + e.getMessage());
          }
      }
+     
+     /**
+      * Update timeslot to set organizer available
+      * @param timeSlotID
+      * @param isAvailable
+      * @return
+      * @throws Exception
+      */
+     public boolean toggleTimeSlotAvailability(String timeSlotID, boolean isAvailable) throws Exception {
+    	 try {
+     		String query = "UPDATE TimeSlot SET organizerAvailable=? WHERE timeSlotID=?;";
+     		PreparedStatement ps = conn.prepareStatement(query);
+     		ps.setInt(1, isAvailable ? 1 : 0);
+     		ps.setString(2, timeSlotID);
+     		
+     		int numAffected = ps.executeUpdate();
+     		ps.close();
+     		return (numAffected == 1);
+     	} catch (Exception e) {
+     		e.printStackTrace();
+             throw new Exception("Failed in getting timeslot: " + e.getMessage());
+     	}
+     }
+     
     
 }

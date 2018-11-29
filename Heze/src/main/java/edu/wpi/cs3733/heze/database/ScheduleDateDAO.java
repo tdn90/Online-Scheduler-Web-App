@@ -1,8 +1,10 @@
 package edu.wpi.cs3733.heze.database;
 
 import java.sql.*;
+import java.util.Iterator;
 
 import edu.wpi.cs3733.heze.entity.ScheduleDate;
+import edu.wpi.cs3733.heze.entity.TimeSlot;
 
 public class ScheduleDateDAO {
 	java.sql.Connection conn;
@@ -15,24 +17,94 @@ public class ScheduleDateDAO {
     	}
     }
     
-    //TODO: implement this
-    public ScheduleDate getScheduleDate(String id) throws Exception {
+    // no update needed
+    
+    /**
+     * GET
+     * @param scheduleDateID
+     * @return
+     * @throws Exception
+     */
+    public ScheduleDate getScheduleDate(String scheduleDateID) throws Exception {
     	try {
-    		ScheduleDate date = null;
-            PreparedStatement ps = conn.prepareStatement("INSERT INTO TimeSlot (timeSlotID, startTime, meetingLength, DateID, organizerAvailable) values (?, ?, ?, ?, ?);");
-            return date;
+    		ScheduleDate scheduleDate = null;
+            PreparedStatement ps = conn.prepareStatement("SELECT * FROM ScheduleDate WHERE dateID = ?;");
+            ps.setString(1, scheduleDateID);
+            ResultSet resultSet = ps.executeQuery();
+            
+            Timestamp date = null;
+            
+            // should only be one result
+            while (resultSet.next()) {
+            	date = resultSet.getTimestamp("Date");
+            }
+            resultSet.close();
+            ps.close();
+            scheduleDate = new ScheduleDate(scheduleDateID, date.toLocalDateTime());
+            
+            PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM TimeSlot WHERE DateID = ?;");
+            ps2.setString(1, scheduleDateID);
+            ResultSet resultSet2 = ps2.executeQuery();
+            
+            while (resultSet2.next()) {
+            	String timeSlotID = resultSet2.getString("timeSlotID");
+            	scheduleDate.addSlot(new TimeSlotDAO().getTimeSlot(timeSlotID));
+            }
+            resultSet2.close();
+            ps2.close();
+            return scheduleDate;
         } catch (Exception e) {
+        	e.printStackTrace();
             throw new Exception("Failed to insert timeslot: " + e.getMessage());
         }
     }
     
-    //TODO: implement this
-    public boolean addScheduleDate(ScheduleDate date) throws Exception {
-    	return false;
+    /**
+     * ADD
+     * @param date
+     * @param scheduleID
+     * @return
+     * @throws Exception
+     */
+    public boolean addScheduleDate(ScheduleDate date, String scheduleID) throws Exception {
+    	try {
+    		// TODO: see if need to check whether schedule date already exists
+            PreparedStatement ps = conn.prepareStatement("INSERT INTO ScheduleDate values (?, ?, ?);");
+            ps.setString(1, date.getId());
+            ps.setTimestamp(2, Timestamp.valueOf(date.getDate()));
+            ps.setString(3, scheduleID);
+            ps.execute();
+            
+            Iterator<TimeSlot> it = date.iterator();
+            while (it.hasNext()) {
+            	TimeSlot ts = it.next();
+            	new TimeSlotDAO().addTimeSlot(ts, date.getId());
+            }
+            return true;
+        } catch (Exception e) {
+        	e.printStackTrace();
+            throw new Exception("Failed to insert date: " + e.getMessage());
+        }
     }
     
-    //TODO:;
+    /**
+     * DELETE
+     * @param id
+     * @return
+     * @throws Exception
+     */
     public boolean deleteScheduleDate(String id) throws Exception {
-    	return false;
+    	try {
+            PreparedStatement ps = conn.prepareStatement("DELETE FROM ScheduleDate WHERE dateID = ?;");
+            ps.setString(1, id);
+            int numAffected = ps.executeUpdate();
+            ps.close();
+            
+            return (numAffected == 1);
+
+        } catch (Exception e) {
+        	e.printStackTrace();
+            throw new Exception("Failed to insert constant: " + e.getMessage());
+        }
     }
 }

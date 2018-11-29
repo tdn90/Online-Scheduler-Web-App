@@ -11,6 +11,8 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
+import edu.wpi.cs3733.heze.database.ScheduleDAO;
+import edu.wpi.cs3733.heze.entity.Schedule;
 import edu.wpi.cs3733.heze.lambda.api.GetScheduleRequest;
 import edu.wpi.cs3733.heze.lambda.api.GetScheduleResponse;
 
@@ -70,7 +72,7 @@ public class GetScheduleHandler implements RequestStreamHandler {
 			}
 		} catch (ParseException pe) {
 			logger.log("Exception parsing:" + pe.toString());
-			response = new GetScheduleResponse(409);  // unable to process input
+			response = new GetScheduleResponse(405);  // unable to process input
 	        processed = true;
 	        body = null;
 		}
@@ -81,9 +83,23 @@ public class GetScheduleHandler implements RequestStreamHandler {
 			logger.log(body);
 			
 			//logger.log("Get a schedule with the id: " + req.secretkey);
-
-			// compute proper response
-			response = new GetScheduleResponse(200);
+			
+			try {
+				Schedule s = new ScheduleDAO().getScheduleBySecretKey(body);
+				if (s == null) {
+					response = new GetScheduleResponse(405);
+				} else {
+					response = new GetScheduleResponse(200, s);
+				}
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				response = new GetScheduleResponse(410);
+			}
+			
+			
+			logger.log(response.toString());
+			
 		}
 		
 		responseJson.put("body", new Gson().toJson(response));

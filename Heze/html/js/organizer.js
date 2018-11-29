@@ -101,8 +101,8 @@ $(document).ready(function () {
                 } else {
                     var api_content = {}
                     api_content["name"] = this.name
-                    api_content["start"] = moment(this.startDate).valueOf()
-                    api_content["end"] = moment(this.endDate).valueOf()
+                    api_content["start"] = moment(this.startDate).format("YYYY-MM-DD")
+                    api_content["end"] = moment(this.endDate).format("YYYY-MM-DD")
                     api_content["meetingDuration"] = this.duration
                     api_content["startHour"] = parseInt(this.startselected)
                     api_content["endHour"] = parseInt(this.endselected)

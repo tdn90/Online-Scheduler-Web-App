@@ -11,6 +11,8 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
+import edu.wpi.cs3733.heze.database.ScheduleDAO;
+import edu.wpi.cs3733.heze.entity.Schedule;
 import edu.wpi.cs3733.heze.lambda.api.CreateScheduleRequest;
 import edu.wpi.cs3733.heze.lambda.api.CreateScheduleResponse;
 import edu.wpi.cs3733.heze.util.Utilities;
@@ -64,7 +66,7 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 			}
 		} catch (ParseException pe) {
 			logger.log("Exception parsing:" + pe.toString());
-			response = new CreateScheduleResponse("NOID", "NOKEY", 410);  // unable to process input
+			response = new CreateScheduleResponse("NOID", "NOKEY", 405);  // unable to process input
 	        processed = true;
 	        body = null;
 		}
@@ -73,11 +75,22 @@ public class CreateScheduleHandler implements RequestStreamHandler {
 			CreateScheduleRequest req = new Gson().fromJson(body, CreateScheduleRequest.class);
 			logger.log(req.toString());
 
-			logger.log("Create a schedule with the name: " + req.name);
-			String randomID = Utilities.generateKey(6);
-			String randomKey = Utilities.generateKey(6);
+			//Make a schedule
+			Schedule s = Schedule.createSchedule(req.name, req.start, req.end, req.meetingDuration, req.startHour, req.endHour);
+			try {
+				new ScheduleDAO().createSchedule(s);
+				response = new CreateScheduleResponse(s.getScheduleID(), s.getSchedule_secretKey(), 200);
+				logger.log("Create response: " + response.toString());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				logger.log("Exception writing to DB: " + e.toString());
+				response = new CreateScheduleResponse("NOID", "NOKEY", 405);
+			}
+			//logger.log("Create a schedule with the name: " + req.name);
+
 			// compute proper response
-			response = new CreateScheduleResponse(randomID, randomKey, 200);
+			
 		}
 		
 		responseJson.put("body", new Gson().toJson(response));
