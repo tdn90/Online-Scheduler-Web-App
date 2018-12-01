@@ -29,8 +29,8 @@ public class Schedule {
 	
 	public static Schedule createSchedule (String name, String startDay, String endDay, 
 			int meetingDuration, int startHour, int endHour) {
-		String id = Utilities.generateKey(10);
-		String secretKey = Utilities.generateKey(30);
+		String id = Utilities.generateKey(6);
+		String secretKey = Utilities.generateKey(6);
 		Schedule schedule = new Schedule(id, secretKey, name, startHour, endHour, meetingDuration);
 		DateTimeFormatter DATEFORMATTER1 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

@@ -1,3 +1,30 @@
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split('&');
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        if (decodeURIComponent(pair[0]) == variable) {
+            return decodeURIComponent(pair[1]);
+        }
+    }
+    console.log('Query variable %s not found', variable);
+}
+function updateQueryStringParameter(uri, key, value) {
+    var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+    var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+    if (uri.match(re)) {
+      return uri.replace(re, '$1' + key + "=" + value + '$2');
+    }
+    else {
+      return uri + separator + key + "=" + value;
+    }
+  }
+function setURL(url) {
+    if (history.pushState) {
+        console.log(url)
+        history.pushState({}, null, url);
+    }
+}
 $(document).ready(function(){
     var grid_holder = new Vue({
         el: '#meeting-sechedule-holder-vue',
@@ -14,9 +41,11 @@ $(document).ready(function(){
             key: ""
         },
         methods: {
-            submit: function() {
+            submit: function(alertError=false) {
                 if (this.key == "") {
-                    this.showAlert = true
+                    if (!alertError) {
+                        this.showAlert = true
+                    }
                 } else {
                     this.showAlert = false
 
@@ -30,19 +59,37 @@ $(document).ready(function(){
                                 grid_holder.grid_data = result.data;
                                 grid_holder.has_data = true;
                                 $('#openModal').modal('hide')
+                                
+                                setURL(updateQueryStringParameter(window.location.href, "id", self.key))
                             } else {
                                 console.log("backend http code not 200")
                                 self.showAlert = true;
+                                if (alertError) {
+                                    self.showAlert = false;
+                                    alert("Failed to load this schedule. Please check that you got the correct link from the organizer.")
+                                }
+                                setURL(updateQueryStringParameter(window.location.href, "id", ""))
                             }
                         },
                         error: function(resp) {
                             console.log("ERROR, ", resp)
                             self.showAlert = true;
+                            if (alertError) {
+                                self.showAlert = false;
+                                alert("Failed to load this schedule. Please check that you got the correct link from the organizer.")
+                            }
+                            setURL(updateQueryStringParameter(window.location.href, "id", ""))
                         },
                     });
                 }
             }
         }
     });
+
+    var id_qparam = getQueryVariable("id")
+    if (id_qparam != undefined) {
+        open_modal.key = id_qparam
+        open_modal.submit(true)
+    }
 
 })
