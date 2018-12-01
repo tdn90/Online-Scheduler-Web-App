@@ -24,7 +24,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 
-public class GetScheduleHandler implements RequestStreamHandler {
+public class ParticipantGetScheduleHandler implements RequestStreamHandler {
 
 	public LambdaLogger logger = null;
 	
@@ -41,11 +41,6 @@ public class GetScheduleHandler implements RequestStreamHandler {
 	        
 		JSONObject responseJson = new JSONObject();
 		responseJson.put("headers", headerJson);
-    	
-        /*int letter = 0;
-        while((letter = input.read()) >= 0) {
-            output.write(Character.toUpperCase(letter));
-        }*/
 		
 		String body;
 		boolean processed = false;
@@ -64,7 +59,7 @@ public class GetScheduleHandler implements RequestStreamHandler {
 		        body = null;
 			} else {
 				JSONObject qparams = (JSONObject) event.get("queryStringParameters");
-				body = (String)qparams.get("secretKey");
+				body = (String)qparams.get("id");
 				if (body == null) {
 					response = new GetScheduleResponse(409);  // unable to process input
 			        processed = true;
@@ -78,17 +73,15 @@ public class GetScheduleHandler implements RequestStreamHandler {
 		}
 		
 		if (!processed) {
-			//GetScheduleRequest req = new Gson().fromJson(body, GetScheduleRequest.class);
-			//logger.log(req.toString());
+			
 			logger.log(body);
-			
-			//logger.log("Get a schedule with the id: " + req.secretkey);
-			
+						
 			try {
-				Schedule s = new ScheduleDAO().getScheduleBySecretKey(body);
+				Schedule s = new ScheduleDAO().getScheduleByID(body);
 				if (s == null) {
 					response = new GetScheduleResponse(405);
 				} else {
+					s.setSchedule_secretKey(null); //invalidate the secrete key so that the participant can't see it.
 					response = new GetScheduleResponse(200, s);
 				}
 			} catch (Exception e) {
@@ -96,15 +89,13 @@ public class GetScheduleHandler implements RequestStreamHandler {
 				e.printStackTrace();
 				response = new GetScheduleResponse(410);
 			}
-			
-			
 			logger.log(response.toString());
-			
 		}
+		
 		GsonBuilder gsonBuilder = new GsonBuilder();  
 		gsonBuilder.serializeNulls();  
 		Gson gson = gsonBuilder.create();
-
+		
 		responseJson.put("body", gson.toJson(response));
 		OutputStreamWriter writer = new OutputStreamWriter(output, "UTF-8");
         writer.write(responseJson.toJSONString());  

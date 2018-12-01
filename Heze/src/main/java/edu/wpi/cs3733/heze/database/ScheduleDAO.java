@@ -23,16 +23,16 @@ public class ScheduleDAO {
 			ps.setString(1, id);
 			ResultSet resultSet = ps.executeQuery();
 			
-			String schedule_secretKey = ""; 
+			String secretKey = ""; 
 			String name = ""; 
 			int startTime = 0; 
 			int endTime = 0; 
 			int meetingDuration = 0; 
 
-			boolean hasSchedule = false;
+			boolean hasSchedule = false; 
 			while (resultSet.next()) {
 				hasSchedule = true;
-				schedule_secretKey = resultSet.getString("secretKey");
+				secretKey = resultSet.getString("secretKey");
 				name = resultSet.getString("name");
 				startTime = resultSet.getInt("startTime");
 				endTime = resultSet.getInt("endTime");
@@ -43,7 +43,7 @@ public class ScheduleDAO {
 			}
 			resultSet.close();
 			ps.close();
-			schedule = new Schedule(id, schedule_secretKey, name, startTime, endTime, meetingDuration);
+			schedule = new Schedule(id, secretKey, name, startTime, endTime, meetingDuration);
 			
 			PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM ScheduleDate WHERE scheduleID=? ORDER BY Date;");
 			ps2.setString(1, id);
