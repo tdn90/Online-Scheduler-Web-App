@@ -164,7 +164,7 @@
         <div class="modal-body">
           <p>Your secret key is {{secretKey}}. Don't share your secret key with anyone.</p>
           <p>Shareable Meeting Schedule Code: <strong>{{id}}</strong></p>
-          <p>Participants can go diretly to your schedule with <kbd>http://example.com/participant.html?id={{id}}</kbd></p>
+          <p>Participants can go diretly to your schedule with <a v-bind:href="'https://s3.amazonaws.com/wpi.cs3733.heze.2/participant.html?id=' + id"><kbd style="word-wrap:break-word;">https://s3.amazonaws.com/wpi.cs3733.heze.2/participant.html?id={{id}}</kbd></a></p>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
