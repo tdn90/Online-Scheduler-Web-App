@@ -1,10 +1,18 @@
 package edu.wpi.cs3733.heze.entity;
 
+import edu.wpi.cs3733.heze.util.Utilities;
+
 public class Meeting {
 	String id;
-	TimeSlot tl;
+	transient TimeSlot tl; // Naming this field transient prevents gson from creating an infinite loop
 	String participant;
 	String secretKey;
+	
+	public static Meeting createMeeting(String participant) {
+		String id = Utilities.generateKey(30);
+		String secret = Utilities.generateKey(6);
+		return new Meeting(id, participant, secret);
+	}
 	
 	public Meeting(String id, String participant, String secretKey) {
 		this.id = id;

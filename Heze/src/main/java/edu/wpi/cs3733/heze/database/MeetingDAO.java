@@ -102,6 +102,12 @@ public class MeetingDAO {
 				organizerAvailable = resultSet2.getInt("organizerAvailable");
 			}
 			
+			if (startTime == null) {
+				resultSet2.close();
+				ps2.close();
+				return null;
+			}
+			
 			// get the time 
 			ScheduleTime time = new ScheduleTime(startTime.getTime());
 			TimeSlot ts = new TimeSlot(timeSlotID, time, meetingLength, organizerAvailable == 1);

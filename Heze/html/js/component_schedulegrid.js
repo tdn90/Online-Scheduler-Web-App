@@ -53,6 +53,37 @@ Vue.component('meeting-schedule-grid', {
         },
         registerFunc: function () {
             console.log("submit timeslot for " + this.selectedTslot + ", with name " + this.enteredName)
+
+            var get_url = "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/participant/registermeeting";
+            var self = this
+            $.ajax({url: get_url, 
+                type: 'POST',
+                success: function(result){
+                    if (result.httpCode == 200) {
+                        self.showValidationAlert = false
+                        self.showMeetingBookedAlert = false
+                        self.selectedTslot.meeting = result.m;
+                        self.$emit('reload-evt')
+                        
+                        $('#registerModal').modal('hide')
+                    } else if (result.httpCode == 403) {
+                        console.log("backend http code not 200")
+                        self.showMeetingBookedAlert = true
+                    } else {
+                        console.log("backend http code not 200")
+                        self.showValidationAlert = true
+                    }
+                },
+                error: function(resp) {
+                    console.log("ERROR, ", resp)
+                    self.showAlert = true;
+                },
+                dataType: 'json',
+                data: JSON.stringify({
+                    id: self.selectedTslot,
+                    name: self.enteredName
+                })
+            });
         }
     },
     template: `
@@ -110,7 +141,10 @@ Vue.component('meeting-schedule-grid', {
                                 <p v-else>[Free]</p>
                             </div>
                             <div v-else-if="slot[0] < date.slots.length && date.slots[slot[0]].organizerAvailable">
-                                {{date.slots[slot[0]].meeting.participant}}
+                                {{date.slots[slot[0]].meeting.participant}} 
+                                <button type="button" class="btn btn-sm btn-default btn-circle" style="float:right">
+                                    <i class="material-icons" style="font-size:18px">close</i>
+                                </button>
                             </div>
                             <div v-else>
                                 [Unavailable]
@@ -138,8 +172,8 @@ Vue.component('meeting-schedule-grid', {
                             <li>Duration: {{duration}} minutes</li>
                         </ul>
                         <p>How should we identify you on the schedule?</p>
-                        <div class="alert alert-danger" v-if="showValidationAlert">
-                            <strong>Whoops! </strong>Please enter a name.
+                    <div class="alert alert-danger" v-if="showValidationAlert">
+                        <strong>Whoops! </strong>Please enter a name (1-30 characters).
                     </div>
                     <div class="alert alert-danger" v-if="showMeetingBookedAlert">
                         <strong>Darn! </strong>Someone else already booked that time slot!

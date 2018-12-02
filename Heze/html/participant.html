@@ -16,6 +16,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
   <script src="js/component_schedulegrid.js"></script>
   <script src="js/participant.js"></script>
+  <link href="css/styles.css" rel="stylesheet" ype="text/css"/>
 </head>
 
 <body>
@@ -33,7 +34,7 @@
     <h1>Participant</h1>
     <hr />
     <div id="meeting-sechedule-holder-vue">
-      <meeting-schedule-grid v-if="has_data" mode="participant" v-bind:value="grid_data"></meeting-schedule-grid>
+      <meeting-schedule-grid v-if="has_data" mode="participant" v-bind:value="grid_data" v-on:reload-evt="reload"></meeting-schedule-grid>
     </div>
   </div>
 
