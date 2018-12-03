@@ -10,7 +10,11 @@ Vue.component('meeting-schedule-grid', {
             selectedTime: null,
             selectedTslot: null,
             duration: null,
-            enteredName: ""
+            enteredName: "",
+            lastMeetingSecretKey: "",
+            enteredSecretKeyForCancellation: "",
+            cancelNotAllowed: false,
+            showSecretKeyAlert: false
         }
     },
     methods: {
@@ -63,9 +67,11 @@ Vue.component('meeting-schedule-grid', {
                         self.showValidationAlert = false
                         self.showMeetingBookedAlert = false
                         self.selectedTslot.meeting = result.m;
+                        self.lastMeetingSecretKey = result.m.secretKey;
                         self.$emit('reload-evt')
                         
                         $('#registerModal').modal('hide')
+                        $('#keyModal').modal('show')
                     } else if (result.httpCode == 403) {
                         console.log("backend http code not 200")
                         self.showMeetingBookedAlert = true
@@ -76,12 +82,42 @@ Vue.component('meeting-schedule-grid', {
                 },
                 error: function(resp) {
                     console.log("ERROR, ", resp)
-                    self.showAlert = true;
+                    self.showValidationAlert = true;
                 },
                 dataType: 'json',
                 data: JSON.stringify({
                     id: self.selectedTslot,
                     name: self.enteredName
+                })
+            });
+        },
+        cancelFunc: function () {
+
+            var get_url = "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/participant/cancelmeeting";
+            var self = this
+            $.ajax({url: get_url, 
+                type: 'POST',
+                success: function(result){
+                    if (result.httpCode == 200) {
+                        self.cancelNotAllowed = false
+                        self.$emit('reload-evt')
+                        
+                        $('#cancelModal').modal('hide')
+                    } else if (result.httpCode == 403) {
+                        console.log("backend http code 403 not auth")
+                        self.cancelNotAllowed = true
+                    } else {
+                        console.log("backend http code not 200")
+                        self.cancelNotAllowed = true
+                    }
+                },
+                error: function(resp) {
+                    console.log("ERROR, ", resp)
+                    self.cancelNotAllowed = true;
+                },
+                dataType: 'json',
+                data: JSON.stringify({
+                    secretKey: self.enteredSecretKeyForCancellation
                 })
             });
         }
@@ -136,13 +172,13 @@ Vue.component('meeting-schedule-grid', {
                                 <button v-if="mode == 'participant'" class="btn btn-primary justify-content-center align-content-between d-flex"
                                 data-toggle="modal" data-target="#registerModal" v-on:click="registerOpenFunc(date.slots[slot[0]].timeslotID, date.date, date.slots[slot[0]])">
                                     <i class="material-icons mr-1">add</i>
-                                    <span>Submit</span>
+                                    <span>Register</span>
                                 </button>
                                 <p v-else>[Free]</p>
                             </div>
                             <div v-else-if="slot[0] < date.slots.length && date.slots[slot[0]].organizerAvailable">
                                 {{date.slots[slot[0]].meeting.participant}} 
-                                <button type="button" class="btn btn-sm btn-default btn-circle" style="float:right">
+                                <button type="button" class="btn btn-sm btn-default btn-circle" style="float:right" data-toggle="modal" data-target="#cancelModal">
                                     <i class="material-icons" style="font-size:18px">close</i>
                                 </button>
                             </div>
@@ -173,7 +209,7 @@ Vue.component('meeting-schedule-grid', {
                         </ul>
                         <p>How should we identify you on the schedule?</p>
                     <div class="alert alert-danger" v-if="showValidationAlert">
-                        <strong>Whoops! </strong>Please enter a name (1-30 characters).
+                        <strong>Whoops! </strong>Please enter a name (1 - 30 characters).
                     </div>
                     <div class="alert alert-danger" v-if="showMeetingBookedAlert">
                         <strong>Darn! </strong>Someone else already booked that time slot!
@@ -189,13 +225,73 @@ Vue.component('meeting-schedule-grid', {
                     <div class="modal-footer">
                         <button class="btn btn-primary justify-content-center align-content-between d-flex" v-on:click="registerFunc">
                             <i class="material-icons mr-1">send</i>
-                            <span>Register</span>
+                            <span>Submit</span>
                         </button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>
                 </div>
             </div>
+
+            <!-- successful meeting creation modal -->
+            <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="keyModal" id="keyModal" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Success!</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="alert alert-success">
+                            <strong>Congrats! </strong>You have registered for a meeting.
+                        </div>
+                        <p><strong>Hey! Write down this key!</strong></p>
+                        <p>If for some reason you change your mind later and choose to cancel this meeting, you will need this secret key</p>
+                        <kbd>{{lastMeetingSecretKey}}</kbd>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <!-- Cancel meeting modal -->
+            <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="cancelModal" id="cancelModal" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cancel a meeting</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>To cancel a meeting, please use the secret key that was provided to you when you created the meeting.</p>
+                    <div class="alert alert-danger" v-if="cancelNotAllowed">
+                        <strong>Access Denied </strong>That isn't the right secret key.
+                    </div>
+                    <form id="findMeetingSchedule">
+                        <div class="form-group">
+                            <label for="name">Secret Key</label>
+                            <input type="text" class="form-control" id="name" aria-describedby="name"
+                                placeholder="AABBCCDD" v-model="enteredSecretKeyForCancellation">
+                        </div>
+                    </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger justify-content-center align-content-between d-flex" v-on:click="cancelFunc">
+                            <i class="material-icons mr-1">warning</i>
+                            <span>Cancel Meeting</span>
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
         </div>
     `
 })

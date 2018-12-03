@@ -41,14 +41,33 @@ public class MeetingDAO {
     }
     
     /**
-     * DELETE
+     * DELETE (by ID)
      * @param meetingID
      * @throws Exception
      */
-    public boolean delMeeting(String meetingID) throws Exception {
+    public boolean delMeetingByID(String meetingID) throws Exception {
 		try {
-			PreparedStatement ps = conn.prepareStatement("delete * FROM Meeting WHERE MeetingID=?;");
+			PreparedStatement ps = conn.prepareStatement("delete FROM Meeting WHERE MeetingID=?;");
 			ps.setString(1, meetingID);
+			int numAffected = ps.executeUpdate();
+			ps.close();
+			return (numAffected == 1);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Failed in getting constant: " + e.getMessage());
+		}
+    }
+
+    /**
+     * DELETE (by secret key)
+     * @param meetingKey
+     * @throws Exception
+     */
+    public boolean delMeetingByKey(String meetingKey) throws Exception {
+		try {
+			PreparedStatement ps = conn.prepareStatement("delete FROM Meeting WHERE secretKey=?;");
+			ps.setString(1, meetingKey);
 			int numAffected = ps.executeUpdate();
 			ps.close();
 			return (numAffected == 1);
