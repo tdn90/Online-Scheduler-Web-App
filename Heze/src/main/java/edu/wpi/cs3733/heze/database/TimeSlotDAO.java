@@ -34,8 +34,10 @@ public class TimeSlotDAO {
     		int meetingDuration = 0;
     		int available = 0;
     		
+    		boolean found = false;
     		// at most one resultSet can be retrieved
     		while (resultSet.next()) {
+    			found = true;
     			timeslot_ID = resultSet.getString("timeSlotID");
     			start = resultSet.getInt("startTime");
     			meetingDuration = resultSet.getInt("meetingLength");
@@ -43,6 +45,10 @@ public class TimeSlotDAO {
     		}
     		resultSet.close();
     		ps.close();
+    		
+    		if (!found) {
+    			return null;
+    		}
     		
     		// Attempt to get meeting associated with time slot above
     		Meeting meeting = null;
