@@ -33,7 +33,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 
-public class ToggleTimeSlotAvailability implements RequestStreamHandler {
+public class ToggleTimeSlotAvailabilityHandler implements RequestStreamHandler {
 
 	public LambdaLogger logger = null;
 	
