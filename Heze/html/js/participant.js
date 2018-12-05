@@ -84,6 +84,7 @@ $(document).ready(function(){
         el: '#meeting-sechedule-holder-vue',
         data: {
             grid_data: {},
+            key: null,
             has_data: false
         },
         methods: {
