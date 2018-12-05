@@ -158,6 +158,50 @@ Vue.component('meeting-schedule-grid', {
                     timeSlotID: tsid
                 })
             });
+        },
+        setRow: function(time, avail) {
+            var self = this
+            console.log(self.value)
+            $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/setavailabilityfortime", 
+                type: 'POST',
+                success: function(result){
+                    if (result.httpCode == 200) {
+                        self.$emit('reload-evt')
+                    } else {
+                        alert('Error. Could not update avilability.')
+                    }
+                },
+                error: function(resp) {
+                    alert('Error. Could not update avilability.')
+                },
+                dataType: 'json',
+                data: JSON.stringify({
+                    startTime: time,
+                    isAvailable: avail,
+                    scheduleID: self.value.scheduleID
+                })
+            });
+        },
+        setCol: function(dateID, avail) {
+            var self = this
+            $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/setavailabilityforday", 
+                type: 'POST',
+                success: function(result){
+                    if (result.httpCode == 200) {
+                        self.$emit('reload-evt')
+                    } else {
+                        alert('Error. Could not update avilability.')
+                    }
+                },
+                error: function(resp) {
+                    alert('Error. Could not update avilability.')
+                },
+                dataType: 'json',
+                data: JSON.stringify({
+                    isAvailable: avail,
+                    dateID: dateID
+                })
+            });
         }
     },
     template: `
@@ -186,11 +230,11 @@ Vue.component('meeting-schedule-grid', {
                     <th v-for="day in value.days.slice((page-1)*5,page*5)">
                         {{convertToDayString(day.date)}}<br />
                         <div style="display:block" v-if="mode == 'organizer'">
-                            <button class="btn btn-success btn-sm justify-content-center align-content-between d-flex">
+                            <button class="btn btn-success btn-sm justify-content-center align-content-between d-flex" v-on:click="setCol(day.id, true)">
                                 <i class="material-icons mr-1">add</i>
                                 <span>Available</span>
                             </button>
-                            <button class="btn btn-danger btn-sm justify-content-center align-content-between d-flex">
+                            <button class="btn btn-danger btn-sm justify-content-center align-content-between d-flex" v-on:click="setCol(day.id, false)">
                                 <i class="material-icons mr-1">close</i>
                                 <span>Unavailable</span>
                             </button>
@@ -202,11 +246,11 @@ Vue.component('meeting-schedule-grid', {
                         <td>
                             {{convertToSlotNameString(slot[1])}}
                             <div style="display:block" v-if="mode == 'organizer'">
-                            <button class="btn btn-success btn-sm justify-content-center align-content-between d-flex">
+                            <button class="btn btn-success btn-sm justify-content-center align-content-between d-flex" v-on:click="setRow(slot[1]*1000, true)">
                                 <i class="material-icons mr-1">add</i>
                                 <span>Available</span>
                             </button>
-                            <button class="btn btn-danger btn-sm justify-content-center align-content-between d-flex">
+                            <button class="btn btn-danger btn-sm justify-content-center align-content-between d-flex" v-on:click="setRow(slot[1]*1000, false)">
                                 <i class="material-icons mr-1">close</i>
                                 <span>Unavailable</span>
                             </button>
