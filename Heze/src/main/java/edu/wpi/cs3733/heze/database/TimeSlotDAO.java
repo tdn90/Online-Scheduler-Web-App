@@ -1,6 +1,9 @@
 package edu.wpi.cs3733.heze.database;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.wpi.cs3733.heze.entity.Meeting;
 import edu.wpi.cs3733.heze.entity.ScheduleTime;
 import edu.wpi.cs3733.heze.entity.TimeSlot;
@@ -152,5 +155,67 @@ public class TimeSlotDAO {
      	}
      }
      
+     /** Get list of open TimeSlots filtered by month, year, day_of_week, day_of_month, or TimeSlot
+      * @param month
+      * @param year
+      * @param day_of_week
+      * @param day_of_month
+      * @param time
+      * @return list of open TimeSlots
+      * @throws Exception
+      */
+     public List<TimeSlot> getOpenSlots(String scheduleID, int month, int year, int day_of_week, int day_of_month, long time_hour) throws Exception{
+     	try {
+    		List<TimeSlot> timeslot_lst = new ArrayList<TimeSlot>();
+    		String month_query = "extract(month from Date)";
+    		String year_query = "extract(year from Date)";
+    		String day_of_week_query = "DAYOFWEEK(DATE)";
+    		String day_of_month_query = "extract(day from Date)";
+    		String startTime_query = "startTime";
+    		if(month != -9999) {
+    			month_query = month_query + " = " + month;
+    		}
+    		if(year != -9999) {
+    			year_query = year_query + " = " + year;
+    		}
+    		if(day_of_week != -9999) {
+    			day_of_week_query = day_of_week_query + " = " + day_of_week;
+    		}
+    		if(day_of_month != -9999) {
+    			day_of_month_query = day_of_month_query + " = " + day_of_month;
+    		}
+    		if(time_hour != -9999) {
+    			startTime_query = startTime_query + " = " + time_hour;
+    		}
+    		
+    		String query = "select timeSlotID from TimeSlot join (select dateID from ScheduleDate" + 
+    				" where scheduleID = ?" + " and " + day_of_week_query + " and " + month_query + " and " + day_of_month_query + " and " + year_query + ") " + "as sub" + 
+    				" on TimeSlot.DateID = sub.DateID" + 
+    				" where organizerAvailable = 1 and " + startTime_query + " ;"; 
+ 
+    		
+    		PreparedStatement ps = conn.prepareStatement(query);
+    		ps.setString(1, scheduleID);
+    		ResultSet resultSet = ps.executeQuery();
+    		
+    		boolean found = false;
+    		// at most one resultSet can be retrieved
+    		while (resultSet.next()) {
+    			timeslot_lst.add(getTimeSlot(resultSet.getString("timeSlotID")));
+    			found = true;
+    		}
+    		resultSet.close();
+    		ps.close();
+    		
+    		if (!found) {
+    			return null;
+    		}
+    		
+    		return timeslot_lst;
+    	} catch (Exception e) {
+    		e.printStackTrace();
+            throw new Exception("Failed in getting list of timeslot: " + e.getMessage());
+    	}
+     }
     
 }
