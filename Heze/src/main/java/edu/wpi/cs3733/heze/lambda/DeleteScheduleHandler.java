@@ -74,9 +74,21 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 			try {
 				
 				Schedule schedule = new ScheduleDAO().getScheduleBySecretKey(req.secretKey);
-				if(schedule != null && req.scheduleID == schedule.getScheduleID() && new ScheduleDAO().deleteSchedule(req.scheduleID)) {
+				if(schedule != null && req.scheduleID.equals(schedule.getScheduleID()) && new ScheduleDAO().deleteSchedule(req.scheduleID)) {
 					response = new DeleteScheduleResponse(200);
 				} else {
+					if (schedule == null)
+					{
+						System.out.println("Schedule retrieved by scheduleDao is null!");
+					}
+					else if (!req.scheduleID.equals(schedule.getScheduleID()))
+					{
+						System.out.println("Requested ID does not match schedule ID returned by DAO: " + schedule.getScheduleID());
+					}
+					else
+					{
+						System.out.println("Schedule not successfully deleted!");
+					}
 					response = new DeleteScheduleResponse(304);
 				}
 			} catch (Exception e) {
