@@ -9,6 +9,7 @@ import edu.wpi.cs3733.heze.util.Utilities;
 public class ScheduleDate{
 	String id;
 	LocalDateTime date;
+	List<TimeSlot> slots;
 	public LocalDateTime getDate() {
 		return date;
 	}
@@ -17,19 +18,18 @@ public class ScheduleDate{
 		this.date = date;
 	}
 
-	List<TimeSlot> slots;
-	
 	public static ScheduleDate makeDay(LocalDateTime date, int startHour, int endHour, int meetingDuration) {
 		String id = Utilities.generateKey(30);
 		LocalDateTime this_day = date;
 		ScheduleDate sd = new ScheduleDate(id, this_day);
 		LocalDateTime start = LocalDateTime.of(this_day.getYear(), this_day.getMonth(), this_day.getDayOfMonth(), startHour, 0);
-		LocalDateTime end = LocalDateTime.of(this_day.getYear(), this_day.getMonth(), this_day.getDayOfMonth(), endHour, 1);
+		LocalDateTime end = LocalDateTime.of(this_day.getYear(), this_day.getMonth(), this_day.getDayOfMonth(), endHour, 0);
 		for (; start.isBefore(end); start = start.plusMinutes(meetingDuration)) {
 			// Add time slot to sd
-			int hour = start.getHour();
-			int minute = start.getMinute();
-			sd.addSlot(TimeSlot.makeTimeSlot(new ScheduleTime(hour, minute), meetingDuration));
+			LocalDateTime current = LocalDateTime.of(start.getYear(), start.getMonth(), start.getDayOfMonth(), start.getHour(), start.getMinute());
+			int hour = current.getHour();
+			int minute = current.getMinute();
+			sd.addSlot(TimeSlot.makeTimeSlot(current, new ScheduleTime(hour, minute), meetingDuration));
 		}
 		return sd;
 	}

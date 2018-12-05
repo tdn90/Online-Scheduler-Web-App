@@ -1,7 +1,5 @@
 package edu.wpi.cs3733.heze.lambda.api;
 
-import edu.wpi.cs3733.heze.entity.ScheduleTime;
-
 public class GetOpenSlotsRequest {
 	
 	public String scheduleID;
@@ -23,9 +21,4 @@ public class GetOpenSlotsRequest {
 	public String toString() {
 		return "Filter by: " + this.scheduleID + ", " + this.month + ", " + this.year + ", " + this.day_of_week + ", " + this.day_of_month;
 	}
-	
-	
-	
-	
-	
 }

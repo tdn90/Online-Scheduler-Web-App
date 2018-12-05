@@ -35,16 +35,18 @@ public class TimeSlotDAO {
     		ResultSet resultSet = ps.executeQuery();
     		
     		String timeslot_ID = "";
-    		int start = 0;
+    		Time startT = null;
     		int meetingDuration = 0;
     		int available = 0;
+    		Timestamp date = null;
     		
     		boolean found = false;
     		// at most one resultSet can be retrieved
     		while (resultSet.next()) {
     			found = true;
+    			date = resultSet.getTimestamp("date");
     			timeslot_ID = resultSet.getString("timeSlotID");
-    			start = resultSet.getInt("startTime");
+    			startT = resultSet.getTime("startTime");
     			meetingDuration = resultSet.getInt("meetingLength");
     			available = resultSet.getInt("organizerAvailable");
     		}
@@ -65,6 +67,7 @@ public class TimeSlotDAO {
     		String meeting_ID = "";
     		String participant = "";
     		String secretKey = "";
+    		
     		// at most one resultSet can be retrieved
     		while (resultSet2.next()) {
     			isEmpty = false;
@@ -79,8 +82,8 @@ public class TimeSlotDAO {
     		}
     		
     		// construct the timeslot
-    		ScheduleTime startTime = new ScheduleTime(start);
-    		timeslot = new TimeSlot(timeslot_ID, startTime, meetingDuration, available == 1);
+    		ScheduleTime startTime = new ScheduleTime(startT.getTime());
+    		timeslot = new TimeSlot(date.toLocalDateTime(), timeslot_ID, startTime, meetingDuration, available == 1);
     		timeslot.setMeeting(meeting);
     		
     		if (meeting != null) {
@@ -111,12 +114,16 @@ public class TimeSlotDAO {
      public boolean addTimeSlot(TimeSlot timeslot, String dateID) throws Exception {
     	 try {
     		 //TODO: decide whether to add a check to see if timeslot already existed
-             PreparedStatement ps = conn.prepareStatement("INSERT INTO TimeSlot (timeSlotID, startTime, meetingLength, DateID, organizerAvailable) values (?, ?, ?, ?, ?);");
+             PreparedStatement ps = conn.prepareStatement("INSERT INTO TimeSlot values (?, ?, ?, ?, ?, ?);");
              ps.setString(1, timeslot.getTimeslotID());
-             ps.setString(2, "" + timeslot.getStartTime().convertToMilli());
-             ps.setString(3, "" + timeslot.getMeetingDuration());
-             ps.setString(4, dateID);
-             ps.setString(5, timeslot.isOrganizerAvailable() ? "1" : "0");
+             
+             Time startTime = new Time(timeslot.getStartTime().convertToMilli());
+             ps.setTime(2, startTime);
+             ps.setInt(3, timeslot.getMeetingDuration());
+             ps.setTimestamp(4, Timestamp.valueOf(timeslot.getDate()));
+             ps.setString(5, dateID);
+             ps.setInt(6, timeslot.isOrganizerAvailable() ? 1 : 0);
+             
              ps.execute();
              return true;
          } catch (Exception e) {

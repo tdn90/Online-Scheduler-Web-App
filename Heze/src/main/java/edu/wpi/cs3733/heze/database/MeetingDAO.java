@@ -112,12 +112,14 @@ public class MeetingDAO {
 			Time startTime = null;
 			//int id = 0; no need for now
 			int meetingLength = 0;
+			Timestamp date = null;
 			int organizerAvailable = 0;
 			
 			while (resultSet2.next()) {
 				startTime = resultSet2.getTime("startTime");
 				//id = resultSet2.getInt("id"); 
 				meetingLength = resultSet2.getInt("meetingLength");
+				date = resultSet2.getTimestamp("date");
 				organizerAvailable = resultSet2.getInt("organizerAvailable");
 			}
 			
@@ -129,7 +131,7 @@ public class MeetingDAO {
 			
 			// get the time 
 			ScheduleTime time = new ScheduleTime(startTime.getTime());
-			TimeSlot ts = new TimeSlot(timeSlotID, time, meetingLength, organizerAvailable == 1);
+			TimeSlot ts = new TimeSlot(date.toLocalDateTime(), timeSlotID, time, meetingLength, organizerAvailable == 1);
 			ts.setMeeting(meeting);
 			meeting = new Meeting(meetingID, participantName, secretKey);
 			meeting.setTimeSlot(ts);

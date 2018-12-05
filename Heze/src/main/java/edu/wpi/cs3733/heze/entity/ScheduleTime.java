@@ -4,7 +4,7 @@ public class ScheduleTime {
 	long hour;
 	long minute;
 	
-	public ScheduleTime(int hour, int minute) {
+	public ScheduleTime(long hour, long minute) {
 		this.hour = hour;
 		this.minute = minute;
 	}
