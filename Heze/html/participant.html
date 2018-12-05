@@ -34,7 +34,9 @@
     <h1>Participant</h1>
     <hr />
     <div id="meeting-sechedule-holder-vue">
-      <meeting-schedule-grid v-if="has_data" mode="participant" v-bind:value="grid_data" v-on:reload-evt="reload"></meeting-schedule-grid>
+      <meeting-schedule-grid v-if="has_data" mode="participant" v-bind:value="grid_data" v-on:reload-evt="reload" ref="grid"></meeting-schedule-grid>
+      <meeting-search v-if="has_data" v-bind:schedid="key" v-bind:start="grid_data.startTime" v-bind:end="grid_data.endTime" 
+        v-bind:duration="grid_data.meetingDuration" v-on:cancel="cancel($event)" v-on:register="register($event)" ref="search"></meeting-search>
     </div>
   </div>
 

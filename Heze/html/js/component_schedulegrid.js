@@ -50,10 +50,16 @@ Vue.component('meeting-schedule-grid', {
             var date = moment(dateobj.date.year + "-" + dateobj.date.month + "-" + dateobj.date.day, "YYYY-MM-DD")
             date = date.add(timeslot.startTime.hour, "hours")
             date = date.add(timeslot.startTime.minute, "minutes")
-            console.log(date)
             this.selectedTime = date.format("h:mm a")
             this.selectedDay = date.format("dddd MM/DD/YYYY")
             this.duration = timeslot.meetingDuration
+        },
+        openRegister: function (tsobj) {
+            this.selectedDay = "UNKNOWN"
+            this.selectedTime = moment(tsobj.startTime.hour + ":" + tsobj.startTime.minute, "H:mm").format("h:mm a")
+            this.duration = tsobj.meetingDuration
+            this.selectedTslot = tsobj.timeSlotID
+            $('#registerModal').modal('show')
         },
         registerFunc: function () {
             console.log("submit timeslot for " + this.selectedTslot + ", with name " + this.enteredName)
@@ -125,6 +131,9 @@ Vue.component('meeting-schedule-grid', {
                     secretKey: self.enteredSecretKeyForCancellation
                 })
             });
+        },
+        openCancel: function() {
+            $('#cancelModal').modal('show')
         },
         deleteFunc: function() {
             this.$emit('delete-me')
