@@ -19,6 +19,8 @@ public class TimeSlotDAO {
     	}
     }
     
+    
+    
     /**
      * GET
      * @param timeslotID
@@ -121,6 +123,30 @@ public class TimeSlotDAO {
         	 e.printStackTrace();
              throw new Exception("Failed to insert timeslot: " + e.getMessage());
          }
+     }
+     
+     public boolean toggleTimeSlotAvailability(String scheduleID, boolean isAvailable, long startTime) throws Exception {
+    	 try {
+    		 
+    		PreparedStatement ps = conn.prepareStatement("SELECT timeSlotID FROM TimeSlot T JOIN ScheduleDate SD ON T.DateID = SD.dateID WHERE scheduleID = ? AND startTime = ?;");
+     		ps.setString(1, scheduleID);
+     		ps.setLong(2, startTime);
+     		ResultSet resultSet = ps.executeQuery();
+     		
+     		boolean found = false;
+     		while (resultSet.next()) {
+     			found = true;
+     			String current_TS_ID = resultSet.getString("timeSlotID");
+     			toggleTimeSlotAvailability(current_TS_ID, isAvailable);
+     		}
+     		resultSet.close();
+     		ps.close();
+     		
+     		return found;
+      	} catch (Exception e) {
+      		e.printStackTrace();
+              throw new Exception("Failed in getting timeslot: " + e.getMessage());
+      	}
      }
      
      /**

@@ -1,9 +1,9 @@
 package edu.wpi.cs3733.heze.lambda.api;
 
-public class ToggleTimeSlotsAtTimeResponse {
+public class SetAvailabilityForTimeResponse {
 	public int httpCode;
 	
-	public ToggleTimeSlotsAtTimeResponse( int httpCode ) {
+	public SetAvailabilityForTimeResponse( int httpCode ) {
 		this.httpCode = httpCode;
 	}
 	public String toString() {

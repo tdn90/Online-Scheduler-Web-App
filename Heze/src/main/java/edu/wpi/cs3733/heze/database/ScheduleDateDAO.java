@@ -42,7 +42,7 @@ public class ScheduleDateDAO {
             ps.close();
             scheduleDate = new ScheduleDate(scheduleDateID, date.toLocalDateTime());
             
-            PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM TimeSlot WHERE DateID = ?;");
+            PreparedStatement ps2 = conn.prepareStatement("SELECT * FROM TimeSlot WHERE DateID = ? ORDER BY startTime;");
             ps2.setString(1, scheduleDateID);
             ResultSet resultSet2 = ps2.executeQuery();
             
