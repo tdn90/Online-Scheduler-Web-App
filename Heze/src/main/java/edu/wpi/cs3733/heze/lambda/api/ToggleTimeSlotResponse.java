@@ -9,6 +9,7 @@ public class ToggleTimeSlotResponse {
 	}
 	
 	public ToggleTimeSlotResponse(int httpCode, boolean isAvailable) {
+		this.httpCode = httpCode;
 		this.isTimeSlotAvailable = isAvailable;
 	}
 	
