@@ -136,6 +136,7 @@ $(document).ready(function () {
                                 self.showAlert = false;
                                 meeting_grid_vue.grid_data = result.data;
                                 meeting_grid_vue.hasKey = true;
+                                meeting_grid_vue.key = resulta.secretKey;
                                 console.log("Eventually use this data: " + JSON.stringify(result))
                                 share_modal.secretKey = resulta.secretKey;
                                 share_modal.id = result.data.scheduleID;
@@ -161,7 +162,38 @@ $(document).ready(function () {
         el: '#meeting-echedule-holder-vue',
         data: {
             hasKey: false,
-            grid_data: {}
+            grid_data: {},
+            key: null
+        },
+        methods: {
+            deletefunc: function() {
+                console.log("func")
+                var self = this
+                $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/deleteschedule", 
+                    type: 'DELETE',
+                    success: function(result){
+                        if (result.httpCode == 200) {
+                            location.reload(); //reload page
+                        } else {
+                            console.log("backend http code not 200")
+                            self.failedDelete = true
+                            alert("Couldn't delete the schedule")
+                        }
+                    },
+                    error: function(resp) {
+                        console.log("ERROR, ", resp)
+                        alert("Couldn't delete the schedule")
+                    },
+                    dataType: 'json',
+                    data: JSON.stringify({
+                        secretKey: self.key,
+                        scheduleID: self.grid_data.scheduleID
+                    })
+                });
+            },
+            reload: function() {
+                open_modal.reload();
+            }
         }
     });
 
@@ -177,8 +209,11 @@ $(document).ready(function () {
                     this.showAlert = true
                 } else {
                     this.showAlert = false
-                    
-                    var get_url = "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/getschedule?secretKey=" + this.secretKey;
+                    this.reload();
+                }
+            },
+            reload: function() {
+                var get_url = "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/getschedule?secretKey=" + this.secretKey;
                     var self = this
                     $.ajax({url: get_url, 
                         type: 'GET',
@@ -188,6 +223,7 @@ $(document).ready(function () {
                                 meeting_grid_vue.grid_data = result.data;
                                 meeting_grid_vue.hasKey = true;
                                 share_modal.secretKey = self.secretKey;
+                                meeting_grid_vue.key = self.secretKey;
                                 share_modal.id = result.data.scheduleID;
                                 $('#openModal').modal('hide')
                             } else {
@@ -200,7 +236,6 @@ $(document).ready(function () {
                             self.showAlert = true;
                         },
                     });
-                }
             }
         }
     });

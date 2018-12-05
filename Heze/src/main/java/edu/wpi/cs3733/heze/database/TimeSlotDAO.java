@@ -137,6 +137,15 @@ public class TimeSlotDAO {
      		ps.setInt(1, isAvailable ? 1 : 0);
      		ps.setString(2, timeSlotID);
      		
+     		// if this is set to false, then meeting will have to also be deleted
+     		if (!isAvailable) {
+     			TimeSlot ts = this.getTimeSlot(timeSlotID);
+     			// check if there is a meeting within this timeslot
+     			if (ts.getMeeting() != null) {
+     				// there is! Then delete it...
+     				new MeetingDAO().delMeetingByID(ts.getMeeting().getId());
+     			}
+     		}
      		int numAffected = ps.executeUpdate();
      		ps.close();
      		return (numAffected == 1);
