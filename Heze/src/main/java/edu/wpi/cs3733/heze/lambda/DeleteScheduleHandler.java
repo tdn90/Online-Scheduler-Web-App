@@ -17,6 +17,7 @@ import com.amazonaws.services.lambda.runtime.RequestStreamHandler;
 import com.google.gson.Gson;
 
 import edu.wpi.cs3733.heze.database.ScheduleDAO;
+import edu.wpi.cs3733.heze.entity.Schedule;
 import edu.wpi.cs3733.heze.lambda.api.DeleteScheduleRequest;
 import edu.wpi.cs3733.heze.lambda.api.DeleteScheduleResponse;
 
@@ -32,7 +33,7 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
     	
     	JSONObject headerJson = new JSONObject();
 		headerJson.put("Content-Type",  "application/json");  // not sure if needed anymore?
-		headerJson.put("Access-Control-Allow-Methods", "POST,OPTIONS");
+		headerJson.put("Access-Control-Allow-Methods", "DELETE,OPTIONS");
 	    headerJson.put("Access-Control-Allow-Origin",  "*");
 	        
 		JSONObject responseJson = new JSONObject();
@@ -71,7 +72,9 @@ public class DeleteScheduleHandler implements RequestStreamHandler {
 			logger.log(req.toString());
 
 			try {
-				if(req.secretKey != null && new ScheduleDAO().deleteSchedule(req.scheduleID)) {
+				
+				Schedule schedule = new ScheduleDAO().getScheduleBySecretKey(req.secretKey);
+				if(schedule != null && req.scheduleID == schedule.getScheduleID() && new ScheduleDAO().deleteSchedule(req.scheduleID)) {
 					response = new DeleteScheduleResponse(200);
 				} else {
 					response = new DeleteScheduleResponse(304);
