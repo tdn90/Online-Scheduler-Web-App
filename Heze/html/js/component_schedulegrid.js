@@ -14,7 +14,7 @@ Vue.component('meeting-schedule-grid', {
             lastMeetingSecretKey: "",
             enteredSecretKeyForCancellation: "",
             cancelNotAllowed: false,
-            showSecretKeyAlert: false
+            showSecretKeyAlert: false,
         }
     },
     methods: {
@@ -91,8 +91,13 @@ Vue.component('meeting-schedule-grid', {
                 })
             });
         },
+        cancelFromOrg: function(a) {
+            this.enteredSecretKeyForCancellation = a
+            this.cancelFunc()
+            self.$emit('reload-evt')
+        },
         cancelFunc: function () {
-
+            
             var get_url = "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/participant/cancelmeeting";
             var self = this
             $.ajax({url: get_url, 
@@ -120,21 +125,52 @@ Vue.component('meeting-schedule-grid', {
                     secretKey: self.enteredSecretKeyForCancellation
                 })
             });
+        },
+        deleteFunc: function() {
+            this.$emit('delete-me')
+            console.log("big delete")
+        },
+        toggle: function(tsid) {
+            var self = this
+            $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/toggletimeslotavailability", 
+                type: 'POST',
+                success: function(result){
+                    if (result.httpCode == 200) {
+                        self.$emit('reload-evt')
+                    } else {
+                        alert('Error. Could not update avilability.')
+                    }
+                },
+                error: function(resp) {
+                    alert('Error. Could not update avilability.')
+                },
+                dataType: 'json',
+                data: JSON.stringify({
+                    timeSlotID: tsid
+                })
+            });
         }
     },
     template: `
         <div>
             <h2>Viewing Meeting Schedule: {{value.name}}</h2><br />
-            <div class="btn-group" role="group">
-                <button class="btn btn-secondary btn-sm justify-content-center align-content-between d-flex" :disabled="page <= 1" v-on:click="prev()">
-                    <i class="material-icons mr-1">arrow_back</i>
-                    <span>Previous</span>
+            <div class="btn-toolbar" role="toolbar">
+                <div class="btn-group" role="group">
+                    <button class="btn btn-secondary btn-sm justify-content-center align-content-between d-flex" :disabled="page <= 1" v-on:click="prev()">
+                        <i class="material-icons mr-1">arrow_back</i>
+                        <span>Previous</span>
+                    </button>
+                    <button class="btn btn-secondary btn-sm justify-content-center align-content-between d-flex" :disabled="value.days.length <= page*5" v-on:click="next()">
+                        <span>Next</span>
+                        <i class="material-icons mr-1">arrow_forward</i>
+                    </button>
+                </div>&nbsp; &nbsp;
+                <button v-if="mode=='organizer'" class="btn btn-danger justify-content-center align-content-between d-flex" data-toggle="modal" data-target="#deleteScheduleModal">
+                    <i class="material-icons mr-1">delete_forever</i>
+                    <span>Delete</span>
                 </button>
-                <button class="btn btn-secondary btn-sm justify-content-center align-content-between d-flex" :disabled="value.days.length <= page*5" v-on:click="next()">
-                    <span>Next</span>
-                    <i class="material-icons mr-1">arrow_forward</i>
-                </button>
-            </div><br /><br />
+            </div>
+            <br /><br />
             <table class="table">
                 <thead>
                     <th>Timeslot</th>
@@ -174,16 +210,27 @@ Vue.component('meeting-schedule-grid', {
                                     <i class="material-icons mr-1">add</i>
                                     <span>Register</span>
                                 </button>
-                                <p v-else>[Free]</p>
+                                <button v-else class="btn btn-danger btn-sm justify-content-center align-content-between d-flex" v-on:click="toggle(date.slots[slot[0]].timeslotID)">
+                                    <i class="material-icons mr-1">close</i>
+                                    <span>Mark as Unavailable</span>
+                                </button>
+                            </button>
                             </div>
                             <div v-else-if="slot[0] < date.slots.length && date.slots[slot[0]].organizerAvailable">
                                 {{date.slots[slot[0]].meeting.participant}} 
-                                <button type="button" class="btn btn-sm btn-default btn-circle" style="float:right" data-toggle="modal" data-target="#cancelModal">
+                                <button v-if="mode=='participant'" type="button" class="btn btn-sm btn-default btn-circle" style="float:right" data-toggle="modal" data-target="#cancelModal">
+                                    <i class="material-icons" style="font-size:18px">close</i>
+                                </button>
+                                <button v-else type="button" class="btn btn-sm btn-default btn-circle" style="float:right" v-on:click="cancelFromOrg(date.slots[slot[0]].meeting.secretKey)">
                                     <i class="material-icons" style="font-size:18px">close</i>
                                 </button>
                             </div>
+                            <button v-else-if="mode=='organizer'" class="btn btn-success btn-sm justify-content-center align-content-between d-flex" v-on:click="toggle(date.slots[slot[0]].timeslotID)">
+                                <i class="material-icons mr-1">add</i>
+                                <span>Mark as Available</span>
+                            </button>
                             <div v-else>
-                                [Unavailable]
+                                
                             </div>
                         </td>
                     </tr>
@@ -285,6 +332,30 @@ Vue.component('meeting-schedule-grid', {
                         <button class="btn btn-danger justify-content-center align-content-between d-flex" v-on:click="cancelFunc">
                             <i class="material-icons mr-1">warning</i>
                             <span>Cancel Meeting</span>
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <!-- Delete schedule modal (organizer) -->
+            <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="deleteScheduleModal" id="deleteScheduleModal" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Are you sure about that?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>If you would like to <strong>permanently</strong> delete this schedule, click delete.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-danger justify-content-center align-content-between d-flex" v-on:click="deleteFunc">
+                            <i class="material-icons mr-1">delete_forever</i>
+                            <span>Delete</span>
                         </button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
