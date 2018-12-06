@@ -217,18 +217,30 @@ public class TimeSlotDAO {
     		if(day_of_month != -9999) {
     			day_of_month_query = day_of_month_query + " = " + day_of_month;
     		}
+    		/*
     		if(time_hour != -9999) {
     			startTime_query = startTime_query + " = " + time_hour;
+    		}
+    		*/
+    		
+    		if(time_hour != -9999) {
+    			startTime_query = startTime_query + " = ?";
     		}
     		
     		String query = "select timeSlotID from TimeSlot join (select dateID from ScheduleDate" + 
     				" where scheduleID = ?" + " and " + day_of_week_query + " and " + month_query + " and " + day_of_month_query + " and " + year_query + ") " + "as sub" + 
     				" on TimeSlot.DateID = sub.DateID" + 
-    				" where organizerAvailable = 1 and " + startTime_query + " ;"; 
- 
+    				" where organizerAvailable = 1 and " + startTime_query + " order by date;"; 
+    		
+    		
     		
     		PreparedStatement ps = conn.prepareStatement(query);
-    		ps.setString(1, scheduleID);
+			ps.setString(1, scheduleID);
+			
+			Time startTime = new Time(time_hour); 
+			if (time_hour != -9999) {
+				ps.setTime(2, startTime);
+			}
     		ResultSet resultSet = ps.executeQuery();
     		
     		boolean found = false;
