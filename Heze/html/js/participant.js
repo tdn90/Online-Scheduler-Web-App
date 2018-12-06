@@ -82,8 +82,8 @@ Vue.component('meeting-search', {
                 })
             });
         },
-        tsString: function(ts) {
-            return moment(ts.startTime.hour + ":" + ts.startTime.minute, "H:mm").format("h:mm a")
+        tsString: function(tsobj) {
+            return moment(tsobj.date.date.year + "-" + tsobj.date.date.month + "-" + tsobj.date.date.day + " " + tsobj.date.time.hour + ":" + tsobj.date.time.minute, "YYYY-MM-DD H:mm").format("dddd MM/DD/YYYY h:mm a")
         },
         register: function(ts) {
             this.$emit('register', ts)

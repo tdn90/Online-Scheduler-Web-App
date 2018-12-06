@@ -136,6 +136,7 @@ $(document).ready(function () {
                                 self.showAlert = false;
                                 meeting_grid_vue.grid_data = result.data;
                                 meeting_grid_vue.hasKey = true;
+                                open_modal.secretKey = resulta.secretKey;
                                 meeting_grid_vue.key = resulta.secretKey;
                                 console.log("Eventually use this data: " + JSON.stringify(result))
                                 share_modal.secretKey = resulta.secretKey;

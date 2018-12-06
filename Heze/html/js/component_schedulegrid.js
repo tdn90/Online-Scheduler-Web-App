@@ -45,20 +45,16 @@ Vue.component('meeting-schedule-grid', {
             if (this.page >= 1)
                 this.page--
         },
-        registerOpenFunc: function (tsid, dateobj, timeslot) {
-            this.selectedTslot = tsid
-            var date = moment(dateobj.date.year + "-" + dateobj.date.month + "-" + dateobj.date.day, "YYYY-MM-DD")
-            date = date.add(timeslot.startTime.hour, "hours")
-            date = date.add(timeslot.startTime.minute, "minutes")
+        registerOpenFunc: function (tsobj) {
+            console.log(tsobj)
+            var date = moment(tsobj.date.date.year + "-" + tsobj.date.date.month + "-" + tsobj.date.date.day + " " + tsobj.date.time.hour + ":" + tsobj.date.time.minute, "YYYY-MM-DD H:mm")
             this.selectedTime = date.format("h:mm a")
             this.selectedDay = date.format("dddd MM/DD/YYYY")
-            this.duration = timeslot.meetingDuration
+            this.duration = tsobj.meetingDuration
+            this.selectedTslot = tsobj.timeslotID
         },
         openRegister: function (tsobj) {
-            this.selectedDay = "UNKNOWN"
-            this.selectedTime = moment(tsobj.startTime.hour + ":" + tsobj.startTime.minute, "H:mm").format("h:mm a")
-            this.duration = tsobj.meetingDuration
-            this.selectedTslot = tsobj.timeSlotID
+            this.registerOpenFunc(tsobj)
             $('#registerModal').modal('show')
         },
         registerFunc: function () {
@@ -259,7 +255,7 @@ Vue.component('meeting-schedule-grid', {
                         <td v-for="date in value.days.slice((page-1)*5,page*5)">
                             <div v-if="slot[0] < date.slots.length && date.slots[slot[0]].meeting == null && date.slots[slot[0]].organizerAvailable">
                                 <button v-if="mode == 'participant'" class="btn btn-primary justify-content-center align-content-between d-flex"
-                                data-toggle="modal" data-target="#registerModal" v-on:click="registerOpenFunc(date.slots[slot[0]].timeslotID, date.date, date.slots[slot[0]])">
+                                data-toggle="modal" data-target="#registerModal" v-on:click="registerOpenFunc(date.slots[slot[0]])">
                                     <i class="material-icons mr-1">add</i>
                                     <span>Register</span>
                                 </button>
