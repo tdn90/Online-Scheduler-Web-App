@@ -1,6 +1,8 @@
 package edu.wpi.cs3733.heze.database;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+
 import edu.wpi.cs3733.heze.entity.Schedule;
 import edu.wpi.cs3733.heze.entity.ScheduleDate;
 
@@ -13,6 +15,64 @@ public class ScheduleDAO {
     	} catch (Exception e) {
     		conn = null;
     	}
+    }
+    
+    //TODO
+    public LocalDateTime getFirstDate(String scheduleID) throws Exception {
+    	try {
+    		LocalDateTime firstDate = null;
+    		PreparedStatement ps = conn.prepareStatement("select min(Date) as minDate from ScheduleDate where scheduleID = ?;");
+			ps.setString(1, scheduleID);
+			ResultSet resultSet = ps.executeQuery();
+			
+			boolean found = false;
+			Timestamp DB_date = null;
+			while (resultSet.next()) {
+				found = true;
+				DB_date = resultSet.getTimestamp("minDate");
+			}
+
+			if (!found) {
+				return null;
+			}
+			firstDate = DB_date.toLocalDateTime();
+			
+			resultSet.close();
+			ps.close();
+            return firstDate;
+        } catch (Exception e) {
+        	e.printStackTrace();
+            throw new Exception("Failed to insert timeslot: " + e.getMessage());
+        } 	
+    }
+    
+    //TODO
+    public LocalDateTime getLastDate(String scheduleID) throws Exception {
+    	try {
+    		LocalDateTime lastDate;
+    		PreparedStatement ps = conn.prepareStatement("select max(Date) as maxDate from ScheduleDate where scheduleID = ?;");
+			ps.setString(1, scheduleID);
+			ResultSet resultSet = ps.executeQuery();
+			
+			boolean found = false;
+			Timestamp DB_date = null;
+			while (resultSet.next()) {
+				found = true;
+				DB_date = resultSet.getTimestamp("maxDate");
+			}
+			
+			if (!found) {
+				return null;
+			}
+			
+			lastDate = DB_date.toLocalDateTime();
+			resultSet.close();
+			ps.close();
+            return lastDate;
+        } catch (Exception e) {
+        	e.printStackTrace();
+            throw new Exception("Failed to insert timeslot: " + e.getMessage());
+        }
     }
     
     //TODO: implement this
@@ -164,14 +224,18 @@ public class ScheduleDAO {
                 resultSet.close();
                 return false;
             }
+            
+            LocalDateTime current_time = LocalDateTime.now();
         	
-        	ps = conn.prepareStatement("INSERT INTO Schedule values(?,?,?,?,?,?);");
+        	ps = conn.prepareStatement("INSERT INTO Schedule values(?,?,?,?,?,?,?);");
+        	
         	ps.setString(1, schedule.getScheduleID());
         	ps.setString(2, schedule.getSchedule_secretKey());
         	ps.setString(3, schedule.getName());
         	ps.setInt(4, schedule.getStartTime());
         	ps.setInt(5, schedule.getEndTime());
         	ps.setInt(6, schedule.getMeetingDuration());
+        	ps.setTimestamp(7, Timestamp.valueOf(current_time));
         	ps.execute();
         	
         	ScheduleDateDAO sdd = new ScheduleDateDAO();
