@@ -137,7 +137,8 @@ public class TimeSlotDAO {
     		 
     		PreparedStatement ps = conn.prepareStatement("SELECT timeSlotID FROM TimeSlot T JOIN ScheduleDate SD ON T.DateID = SD.dateID WHERE scheduleID = ? AND startTime = ?;");
      		ps.setString(1, scheduleID);
-     		ps.setLong(2, startTime);
+     		Time startT = new Time(startTime);
+     		ps.setTime(2, startT);
      		ResultSet resultSet = ps.executeQuery();
      		
      		boolean found = false;
@@ -171,6 +172,7 @@ public class TimeSlotDAO {
      		ps.setString(2, timeSlotID);
      		
      		// if this is set to false, then meeting will have to also be deleted
+     		/*
      		if (!isAvailable) {
      			TimeSlot ts = this.getTimeSlot(timeSlotID);
      			// check if there is a meeting within this timeslot
@@ -179,6 +181,7 @@ public class TimeSlotDAO {
      				new MeetingDAO().delMeetingByID(ts.getMeeting().getId());
      			}
      		}
+     		*/
      		int numAffected = ps.executeUpdate();
      		ps.close();
      		return (numAffected == 1);
