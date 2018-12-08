@@ -249,4 +249,25 @@ public class ScheduleDAO {
     		throw new Exception("Failed to insert constant: " + e.toString());
     	}
     }
+    
+    public boolean deleteScheduleList(int days) throws Exception {
+    	try {
+    		String query = "select scheduleID from Schedule where (dateCreated + interval ? day) <= current_timestamp;";
+    		PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, days);
+			ResultSet resultSet = ps.executeQuery();
+
+			boolean hasSchedule = false; 
+			while (resultSet.next()) {
+				deleteSchedule(resultSet.getString("scheduleID"));
+				hasSchedule = true;
+			}
+			resultSet.close();
+			ps.close();
+			return hasSchedule;
+        } catch (Exception e) {
+        	e.printStackTrace();
+            throw new Exception("Failed to insert timeslot: " + e.getMessage());
+        }
+    }
 }
