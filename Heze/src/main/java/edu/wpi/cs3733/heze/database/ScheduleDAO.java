@@ -2,9 +2,12 @@ package edu.wpi.cs3733.heze.database;
 
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import edu.wpi.cs3733.heze.entity.Schedule;
 import edu.wpi.cs3733.heze.entity.ScheduleDate;
+import edu.wpi.cs3733.heze.entity.TimeSlot;
 
 public class ScheduleDAO {
 	java.sql.Connection conn;
@@ -247,6 +250,38 @@ public class ScheduleDAO {
     	} catch (Exception e) {
     		e.printStackTrace();
     		throw new Exception("Failed to insert constant: " + e.toString());
+    	}
+    }
+    
+    //SysAdmin
+    public List<Schedule> getScheduleList(int hours) throws Exception{
+    	try {
+    		List<Schedule> schedule_lst = new ArrayList<Schedule>();
+
+    		String query = "select scheduleID from Schedule where (dateCreated + interval ? hour) <= current_timestamp;";
+   
+    		PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, hours);
+			
+    		ResultSet resultSet = ps.executeQuery();
+    		
+    		boolean found = false;
+    		// at most one resultSet can be retrieved
+    		while (resultSet.next()) {
+    			schedule_lst.add(getScheduleByID(resultSet.getString("scheduleID")));
+    			found = true;
+    		}
+    		resultSet.close();
+    		ps.close();
+    		
+    		if (!found) {
+    			return null;
+    		}
+    		
+    		return schedule_lst;
+    	} catch (Exception e) {
+    		e.printStackTrace();
+            throw new Exception("Failed in getting list schedule: " + e.getMessage());
     	}
     }
 }

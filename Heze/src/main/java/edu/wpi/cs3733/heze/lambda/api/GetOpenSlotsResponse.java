@@ -16,12 +16,6 @@ public class GetOpenSlotsResponse {
 	
 	public String toString() {
 		String result = "";
-//		if(this.timeslot_lst.isEmpty()) {
-//			for(TimeSlot tl : this.timeslot_lst) {
-//				result = tl.getTimeslotID() + ", ";
-//
-//			}
-//		}
 		return "List of timeSlotID: " + result;
 	}
 }
