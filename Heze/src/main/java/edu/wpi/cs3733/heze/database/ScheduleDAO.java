@@ -253,7 +253,7 @@ public class ScheduleDAO {
     	}
     }
     
-<<<<<<< HEAD
+    //SysAdmin
     public boolean deleteScheduleList(int days) throws Exception {
     	try {
     		String query = "select scheduleID from Schedule where (dateCreated + interval ? day) <= current_timestamp;";
@@ -273,7 +273,8 @@ public class ScheduleDAO {
         	e.printStackTrace();
             throw new Exception("Failed to insert timeslot: " + e.getMessage());
         }
-=======
+    }
+
     //SysAdmin
     public List<Schedule> getScheduleList(int hours) throws Exception{
     	try {
@@ -304,6 +305,5 @@ public class ScheduleDAO {
     		e.printStackTrace();
             throw new Exception("Failed in getting list schedule: " + e.getMessage());
     	}
->>>>>>> sysAd-getSchedule
     }
 }
