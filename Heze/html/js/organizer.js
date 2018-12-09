@@ -196,7 +196,6 @@ $(document).ready(function () {
         },
         methods: {
             deletefunc: function() {
-                console.log("func")
                 var self = this
                 $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/deleteschedule", 
                     type: 'DELETE',
@@ -217,6 +216,30 @@ $(document).ready(function () {
                     data: JSON.stringify({
                         secretKey: self.key,
                         scheduleID: self.grid_data.scheduleID
+                    })
+                });
+            },
+            extendFunc: function( numdays ) {
+                var self = this
+                $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/extendschedule", 
+                    type: 'POST',
+                    success: function(result){
+                        if (result.httpCode == 200) {
+                            location.reload(); //reload page
+                        } else {
+                            console.log("backend http code not 200")
+                            self.failedDelete = true
+                            alert("Couldn't extend the schedule")
+                        }
+                    },
+                    error: function(resp) {
+                        console.log("ERROR, ", resp)
+                        alert("Couldn't extend the schedule")
+                    },
+                    dataType: 'json',
+                    data: JSON.stringify({
+                        secretKey: self.key,
+                        numDays: numdays
                     })
                 });
             },

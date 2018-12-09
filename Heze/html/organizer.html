@@ -46,7 +46,7 @@
     <h1>Organizer</h1>
     <hr />
     <div id="meeting-echedule-holder-vue">
-      <meeting-schedule-grid v-if="hasKey" mode="organizer" v-bind:value="grid_data" v-on:reload-evt="reload" v-on:delete-me="deletefunc"></meeting-schedule-grid>
+      <meeting-schedule-grid v-if="hasKey" mode="organizer" v-bind:value="grid_data" v-on:reload-evt="reload" v-on:delete-me="deletefunc" v-on:extend-me="extendFunc($event)"></meeting-schedule-grid>
     </div>
   </div>
 

@@ -1,3 +1,24 @@
+Vue.component('radio-button-group', {
+    props: ['options', 'defaultValue', 'value'],
+    data: function() {
+        return {}
+    },
+    methods: {
+        clickButton: function(opt) {
+            value = opt
+            this.$emit('input', value)
+        },
+    },
+    template: `
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <button v-for="opt in options" type="button" 
+            v-bind:class="'btn btn-outline-primary ' + ((value == opt || (value == undefined && defaultValue == opt))? 'active' : '')"
+            v-on:click="clickButton(opt)">{{opt}}</button>
+    </div>
+    `
+})
+
+
 Vue.component('meeting-schedule-grid', {
     props: ['mode', 'value'],
     data: function () {
@@ -15,6 +36,8 @@ Vue.component('meeting-schedule-grid', {
             enteredSecretKeyForCancellation: "",
             cancelNotAllowed: false,
             showSecretKeyAlert: false,
+            extendMode: "End",
+            extendLength: 1
         }
     },
     methods: {
@@ -133,7 +156,6 @@ Vue.component('meeting-schedule-grid', {
         },
         deleteFunc: function() {
             this.$emit('delete-me')
-            console.log("big delete")
         },
         toggle: function(tsid) {
             var self = this
@@ -198,6 +220,9 @@ Vue.component('meeting-schedule-grid', {
                     dateID: dateID
                 })
             });
+        },
+        extendFunc: function() {
+            this.$emit('extend-me', this.extendLength * ((this.extendMode == "End")? 1 : -1))
         }
     },
     template: `
@@ -416,7 +441,7 @@ Vue.component('meeting-schedule-grid', {
                 </div>
             </div>
 
-            <!-- Delete schedule modal (organizer) -->
+            <!-- Extend schedule modal (organizer) -->
             <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="extendScheduleModal" id="extendScheduleModal" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                 <div class="modal-content">
@@ -427,10 +452,11 @@ Vue.component('meeting-schedule-grid', {
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>You can add days to the beginning or the end of your schedule</p>
+                        <p>You can extend the duration of your schedule by adding days to the beginning or the end of it:</p><br />
+                        Add <input type="number" class="form-control" style="width:100px; display: inline-block" minimum="1" v-model:value="extendLength"/> days to the <radio-button-group v-bind:options="['Beginning', 'End']" v-model="extendMode"></radio-button-group><br /> of the schedule.
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-primary justify-content-center align-content-between d-flex">
+                        <button class="btn btn-primary justify-content-center align-content-between d-flex" v-on:click="extendFunc">
                             <i class="material-icons mr-1">send</i>
                             <span>Submit</span>
                         </button>
