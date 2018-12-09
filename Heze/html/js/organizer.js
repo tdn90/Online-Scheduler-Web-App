@@ -1,3 +1,31 @@
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split('&');
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        if (decodeURIComponent(pair[0]) == variable) {
+            return decodeURIComponent(pair[1]);
+        }
+    }
+    console.log('Query variable %s not found', variable);
+}
+function updateQueryStringParameter(uri, key, value) {
+    var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+    var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+    if (uri.match(re)) {
+      return uri.replace(re, '$1' + key + "=" + value + '$2');
+    }
+    else {
+      return uri + separator + key + "=" + value;
+    }
+  }
+function setURL(url) {
+    if (history.pushState) {
+        console.log(url)
+        history.pushState({}, null, url);
+    }
+}
+
 function wdayonly(d, reverse = false) {
     if (!reverse) {
         if (d.weekday() == 0)
@@ -227,14 +255,17 @@ $(document).ready(function () {
                                 meeting_grid_vue.key = self.secretKey;
                                 share_modal.id = result.data.scheduleID;
                                 $('#openModal').modal('hide')
+                                setURL(updateQueryStringParameter(window.location.href, "secret", self.secretKey))
                             } else {
                                 console.log("backend http code not 200")
                                 self.showAlert = true;
+                                setURL(updateQueryStringParameter(window.location.href, "secret", ""))
                             }
                         },
                         error: function(resp) {
                             console.log("ERROR, ", resp)
                             self.showAlert = true;
+                            setURL(updateQueryStringParameter(window.location.href, "secret", ""))
                         },
                     });
             }
@@ -258,9 +289,6 @@ $(document).ready(function () {
         }
     })
 
-    //TODO: Delete
-    //loadSchedule("AABBCCDDEE")
-
     var d = moment()
     wdayonly(d);
     meeting_create_vue.startDate = d.format("MM/DD/YYYY");
@@ -280,4 +308,11 @@ $(document).ready(function () {
             meeting_create_vue.endDate = e.format();
         });
     });
+
+    var id_qparam = getQueryVariable("secret")
+    if (id_qparam != undefined) {
+        open_modal.secretKey = id_qparam
+        open_modal.reload()
+    }
+
 })

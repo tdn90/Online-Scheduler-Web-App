@@ -202,7 +202,7 @@ Vue.component('meeting-schedule-grid', {
     },
     template: `
         <div>
-            <h2>Viewing Meeting Schedule: {{value.name}}</h2><br />
+            <h2>{{value.name}}</h2><br />
             <div class="btn-toolbar" role="toolbar">
                 <div class="btn-group" role="group">
                     <button class="btn btn-secondary btn-sm justify-content-center align-content-between d-flex" :disabled="page <= 1" v-on:click="prev()">
@@ -217,6 +217,10 @@ Vue.component('meeting-schedule-grid', {
                 <button v-if="mode=='organizer'" class="btn btn-danger justify-content-center align-content-between d-flex" data-toggle="modal" data-target="#deleteScheduleModal">
                     <i class="material-icons mr-1">delete_forever</i>
                     <span>Delete</span>
+                </button>&nbsp; &nbsp;
+                <button v-if="mode=='organizer'" class="btn btn-primary justify-content-center align-content-between d-flex" data-toggle="modal" data-target="#extendScheduleModal">
+                    <i class="material-icons mr-1" style="transform: rotate(90deg)">unfold_more</i>
+                    <span>Add Days</span>
                 </button>
             </div>
             <br /><br />
@@ -405,6 +409,30 @@ Vue.component('meeting-schedule-grid', {
                         <button class="btn btn-danger justify-content-center align-content-between d-flex" v-on:click="deleteFunc">
                             <i class="material-icons mr-1">delete_forever</i>
                             <span>Delete</span>
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+
+            <!-- Delete schedule modal (organizer) -->
+            <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="extendScheduleModal" id="extendScheduleModal" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Extend Schedule</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>You can add days to the beginning or the end of your schedule</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary justify-content-center align-content-between d-flex">
+                            <i class="material-icons mr-1">send</i>
+                            <span>Submit</span>
                         </button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
