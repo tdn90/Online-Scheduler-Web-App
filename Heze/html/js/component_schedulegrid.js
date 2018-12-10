@@ -157,25 +157,28 @@ Vue.component('meeting-schedule-grid', {
         deleteFunc: function() {
             this.$emit('delete-me')
         },
-        toggle: function(tsid) {
-            var self = this
-            $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/toggletimeslotavailability", 
-                type: 'POST',
-                success: function(result){
-                    if (result.httpCode == 200) {
-                        self.$emit('reload-evt')
-                    } else {
+        toggle: function(ts) {
+            var tsid = ts.timeslotID
+            if (this.mode == "organizer") {
+                var self = this
+                $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/toggletimeslotavailability", 
+                    type: 'POST',
+                    success: function(result){
+                        if (result.httpCode == 200) {
+                            self.$emit('reload-evt')
+                        } else {
+                            alert('Error. Could not update avilability.')
+                        }
+                    },
+                    error: function(resp) {
                         alert('Error. Could not update avilability.')
-                    }
-                },
-                error: function(resp) {
-                    alert('Error. Could not update avilability.')
-                },
-                dataType: 'json',
-                data: JSON.stringify({
-                    timeSlotID: tsid
-                })
-            });
+                    },
+                    dataType: 'json',
+                    data: JSON.stringify({
+                        timeSlotID: tsid
+                    })
+                });
+            }
         },
         setRow: function(time, avail) {
             var self = this
@@ -223,6 +226,13 @@ Vue.component('meeting-schedule-grid', {
         },
         extendFunc: function() {
             this.$emit('extend-me', this.extendLength * ((this.extendMode == "End")? 1 : -1))
+        },
+        getCellClass: function(slot) {
+            if (slot.organizerAvailable) {
+                return "table-light"
+            } else {
+                return "table-secondary"
+            }
         }
     },
     template: `
@@ -247,6 +257,15 @@ Vue.component('meeting-schedule-grid', {
                     <i class="material-icons mr-1" style="transform: rotate(90deg)">unfold_more</i>
                     <span>Add Days</span>
                 </button>
+            </div><br />
+            <div class="width:100%" role="toolbar"> <!-- Legend -->
+                <strong>Legend:</strong>
+                <div class=" align-content-between d-flex" style="padding:10px">
+                    <div class="table-secondary legend-key"></div> &nbsp;&nbsp; Timeslot unavailable &nbsp;&nbsp; <div class="table-light legend-key"></div> &nbsp;&nbsp; Timeslot available
+                </div>
+                <div v-if="mode == 'organizer'">
+                    Click on a timeslot to toggle its availability.
+                </div>
             </div>
             <br /><br />
             <table class="table">
@@ -255,14 +274,16 @@ Vue.component('meeting-schedule-grid', {
                     <th v-for="day in value.days.slice((page-1)*5,page*5)">
                         {{convertToDayString(day.date)}}<br />
                         <div style="display:block" v-if="mode == 'organizer'">
-                            <button class="btn btn-success btn-sm justify-content-center align-content-between d-flex" v-on:click="setCol(day.id, true)">
-                                <i class="material-icons mr-1">add</i>
-                                <span>Available</span>
-                            </button>
-                            <button class="btn btn-danger btn-sm justify-content-center align-content-between d-flex" v-on:click="setCol(day.id, false)">
-                                <i class="material-icons mr-1">close</i>
-                                <span>Unavailable</span>
-                            </button>
+                            <center>
+                                <div class="btn-group">
+                                    <button class="btn btn-success btn-sm justify-content-center align-content-between d-flex" v-on:click="setCol(day.id, true)">
+                                        <i class="material-icons mr-1">check</i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm justify-content-center align-content-between d-flex" v-on:click="setCol(day.id, false)">
+                                        <i class="material-icons mr-1">close</i>
+                                    </button>
+                                </div>
+                            </center>
                         </div>
                     </th>
                 </thead>
@@ -271,42 +292,36 @@ Vue.component('meeting-schedule-grid', {
                         <td>
                             {{convertToSlotNameString(slot[1])}}
                             <div style="display:block" v-if="mode == 'organizer'">
-                            <button class="btn btn-success btn-sm justify-content-center align-content-between d-flex" v-on:click="setRow(slot[1]*1000, true)">
-                                <i class="material-icons mr-1">add</i>
-                                <span>Available</span>
-                            </button>
-                            <button class="btn btn-danger btn-sm justify-content-center align-content-between d-flex" v-on:click="setRow(slot[1]*1000, false)">
-                                <i class="material-icons mr-1">close</i>
-                                <span>Unavailable</span>
-                            </button>
-                        </div>
+                                <center>
+                                    <div class="btn-group">
+                                        <button class="btn btn-success btn-sm justify-content-center align-content-between d-flex" v-on:click="setRow(slot[1]*1000, true)">
+                                            <i class="material-icons mr-1">check</i>
+                                        </button>
+                                        <button class="btn btn-danger btn-sm justify-content-center align-content-between d-flex" v-on:click="setRow(slot[1]*1000, false)">
+                                            <i class="material-icons mr-1">close</i>
+                                        </button>
+                                    </div>
+                                </center>
+                            </div>
                         </td>
-                        <td v-for="date in value.days.slice((page-1)*5,page*5)">
+                        <td v-for="date in value.days.slice((page-1)*5,page*5)" v-bind:class="getCellClass(date.slots[slot[0]])" v-on:click="toggle(date.slots[slot[0]])">
                             <div v-if="slot[0] < date.slots.length && date.slots[slot[0]].meeting == null && date.slots[slot[0]].organizerAvailable">
                                 <button v-if="mode == 'participant'" class="btn btn-primary justify-content-center align-content-between d-flex"
                                 data-toggle="modal" data-target="#registerModal" v-on:click="registerOpenFunc(date.slots[slot[0]])">
                                     <i class="material-icons mr-1">add</i>
                                     <span>Register</span>
                                 </button>
-                                <button v-else class="btn btn-danger btn-sm justify-content-center align-content-between d-flex" v-on:click="toggle(date.slots[slot[0]].timeslotID)">
-                                    <i class="material-icons mr-1">close</i>
-                                    <span>Mark as Unavailable</span>
-                                </button>
                             </button>
                             </div>
-                            <div v-else-if="slot[0] < date.slots.length && date.slots[slot[0]].organizerAvailable">
+                            <div v-else-if="slot[0] < date.slots.length && date.slots[slot[0]].meeting != null">
                                 {{date.slots[slot[0]].meeting.participant}} 
                                 <button v-if="mode=='participant'" type="button" class="btn btn-sm btn-default btn-circle" style="float:right" data-toggle="modal" data-target="#cancelModal">
                                     <i class="material-icons" style="font-size:18px">close</i>
                                 </button>
-                                <button v-else type="button" class="btn btn-sm btn-default btn-circle" style="float:right" v-on:click="cancelFromOrg(date.slots[slot[0]].meeting.secretKey)">
+                                <button v-else type="button" class="btn btn-sm btn-default btn-circle" style="float:right" v-on:click.stop="cancelFromOrg(date.slots[slot[0]].meeting.secretKey)">
                                     <i class="material-icons" style="font-size:18px">close</i>
                                 </button>
                             </div>
-                            <button v-else-if="mode=='organizer'" class="btn btn-success btn-sm justify-content-center align-content-between d-flex" v-on:click="toggle(date.slots[slot[0]].timeslotID)">
-                                <i class="material-icons mr-1">add</i>
-                                <span>Mark as Available</span>
-                            </button>
                             <div v-else>
                                 
                             </div>
