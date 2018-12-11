@@ -14,6 +14,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.23/moment-timezone.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.min.js"></script>
+  <script src="js/misc.js"></script>
   <script src="js/component_schedulegrid.js"></script>
   <script src="js/organizer.js"></script>
   <link href="css/styles.css" rel="stylesheet" ype="text/css"/>
@@ -48,6 +49,9 @@
     <div id="meeting-echedule-holder-vue">
       <meeting-schedule-grid v-if="hasKey" mode="organizer" v-bind:value="grid_data" v-on:reload-evt="reload" v-on:delete-me="deletefunc" v-on:extend-me="extendFunc($event)"></meeting-schedule-grid>
     </div>
+    <div id="loadingHolder">
+        <fullpage-load v-bind:loading="isLoad" v-bind:timeout="timeout"></fullpage-load>
+      </div>
   </div>
 
   <!------------>
@@ -93,7 +97,7 @@
 
   <!-- New schedule modal -->
   <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="newModal" id="newModal" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title">Create a meeting schedule</h5>
@@ -119,6 +123,8 @@
                 <!--<input type="number" min="1" class="form-control" id="meetingScheduleDuration" v-model="duration" required>-->
                 <input type="radio" id="15mins" value="15" v-model="duration">
                 <label for="15mins">15 Minutes</label>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="radio" id="20mins" value="20" v-model="duration">
+                <label for="15mins">20 Minutes</label>&nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="radio" id="30mins" value="30" v-model="duration">
                 <label for="30mins">30 Minutes</label>&nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="radio" id="60mins" value="60" v-model="duration">

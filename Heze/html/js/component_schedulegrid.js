@@ -1,3 +1,11 @@
+if (window.STARTLOAD == undefined) {
+    window.STARTLOAD = function(){}
+}
+if (window.STOPLOAD == undefined) {
+    window.STOPLOAD = function(){}
+}
+
+
 Vue.component('radio-button-group', {
     props: ['options', 'defaultValue', 'value'],
     data: function() {
@@ -85,9 +93,11 @@ Vue.component('meeting-schedule-grid', {
 
             var get_url = "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/participant/registermeeting";
             var self = this
+            STARTLOAD()
             $.ajax({url: get_url, 
                 type: 'POST',
                 success: function(result){
+                    window.STOPLOAD()
                     if (result.httpCode == 200) {
                         self.showValidationAlert = false
                         self.showMeetingBookedAlert = false
@@ -106,6 +116,7 @@ Vue.component('meeting-schedule-grid', {
                     }
                 },
                 error: function(resp) {
+                    window.STOPLOAD()
                     console.log("ERROR, ", resp)
                     self.showValidationAlert = true;
                 },
@@ -125,9 +136,11 @@ Vue.component('meeting-schedule-grid', {
             
             var get_url = "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/participant/cancelmeeting";
             var self = this
+            STARTLOAD()
             $.ajax({url: get_url, 
                 type: 'POST',
                 success: function(result){
+                    window.STOPLOAD()
                     if (result.httpCode == 200) {
                         self.cancelNotAllowed = false
                         self.$emit('reload-evt')
@@ -142,6 +155,7 @@ Vue.component('meeting-schedule-grid', {
                     }
                 },
                 error: function(resp) {
+                    window.STOPLOAD()
                     console.log("ERROR, ", resp)
                     self.cancelNotAllowed = true;
                 },
@@ -161,9 +175,11 @@ Vue.component('meeting-schedule-grid', {
             var tsid = ts.timeslotID
             if (this.mode == "organizer") {
                 var self = this
+                STARTLOAD()
                 $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/toggletimeslotavailability", 
                     type: 'POST',
                     success: function(result){
+                        window.STOPLOAD()
                         if (result.httpCode == 200) {
                             self.$emit('reload-evt')
                         } else {
@@ -171,6 +187,7 @@ Vue.component('meeting-schedule-grid', {
                         }
                     },
                     error: function(resp) {
+                        window.STOPLOAD()
                         alert('Error. Could not update avilability.')
                     },
                     dataType: 'json',
@@ -183,9 +200,11 @@ Vue.component('meeting-schedule-grid', {
         setRow: function(time, avail) {
             var self = this
             console.log(self.value)
+            STARTLOAD()
             $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/setavailabilityfortime", 
                 type: 'POST',
                 success: function(result){
+                    window.STOPLOAD()
                     if (result.httpCode == 200) {
                         self.$emit('reload-evt')
                     } else {
@@ -193,6 +212,7 @@ Vue.component('meeting-schedule-grid', {
                     }
                 },
                 error: function(resp) {
+                    window.STOPLOAD()
                     alert('Error. Could not update avilability.')
                 },
                 dataType: 'json',
@@ -205,9 +225,11 @@ Vue.component('meeting-schedule-grid', {
         },
         setCol: function(dateID, avail) {
             var self = this
+            STARTLOAD()
             $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/setavailabilityforday", 
                 type: 'POST',
                 success: function(result){
+                    window.STOPLOAD()
                     if (result.httpCode == 200) {
                         self.$emit('reload-evt')
                     } else {
@@ -215,6 +237,7 @@ Vue.component('meeting-schedule-grid', {
                     }
                 },
                 error: function(resp) {
+                    window.STOPLOAD()
                     alert('Error. Could not update avilability.')
                 },
                 dataType: 'json',
@@ -304,7 +327,7 @@ Vue.component('meeting-schedule-grid', {
                                 </center>
                             </div>
                         </td>
-                        <td v-for="date in value.days.slice((page-1)*5,page*5)" v-bind:class="getCellClass(date.slots[slot[0]])" v-on:click="toggle(date.slots[slot[0]])">
+                        <td v-for="date in value.days.slice((page-1)*5,page*5)" v-bind:class="getCellClass(date.slots[slot[0]]) + ' hovercolor'" v-on:click="toggle(date.slots[slot[0]])">
                             <div v-if="slot[0] < date.slots.length && date.slots[slot[0]].meeting == null && date.slots[slot[0]].organizerAvailable">
                                 <button v-if="mode == 'participant'" class="btn btn-primary justify-content-center align-content-between d-flex"
                                 data-toggle="modal" data-target="#registerModal" v-on:click="registerOpenFunc(date.slots[slot[0]])">

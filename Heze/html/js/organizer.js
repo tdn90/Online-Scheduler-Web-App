@@ -139,13 +139,16 @@ $(document).ready(function () {
                     //Hide the modal once we have a new body
                     var add_url = "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/createschedule";
                     var self = this
+                    STARTLOAD()
                     $.ajax({url: add_url, 
                         type: 'POST',
                         dataType: 'json',
                         success: function(result){
+                            window.STOPLOAD()
                             self.didSubmit(result)
                         },
                         error: function(resp) {
+                            window.STOPLOAD()
                             alert("Error!")
                         },
                         data: JSON.stringify(api_content)
@@ -157,9 +160,11 @@ $(document).ready(function () {
                     this.$refs.form.classList.remove('was-validated');
                     var get_url = "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/getschedule?secretKey=" + resulta.secretKey;
                     var self = this
+                    STARTLOAD()
                     $.ajax({url: get_url, 
                         type: 'GET',
                         success: function(result){
+                            window.STOPLOAD()
                             if (result.httpcode == 200) {
                                 self.showAlert = false;
                                 meeting_grid_vue.grid_data = result.data;
@@ -176,6 +181,7 @@ $(document).ready(function () {
                             }
                         },
                         error: function(resp) {
+                            window.STOPLOAD()
                             console.log("ERROR, ", resp)
                             self.showAlert = true;
                         },
@@ -196,10 +202,12 @@ $(document).ready(function () {
         },
         methods: {
             deletefunc: function() {
+                STARTLOAD()
                 var self = this
                 $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/deleteschedule", 
                     type: 'DELETE',
                     success: function(result){
+                        window.STOPLOAD()
                         if (result.httpCode == 200) {
                             location.reload(); //reload page
                         } else {
@@ -209,6 +217,7 @@ $(document).ready(function () {
                         }
                     },
                     error: function(resp) {
+                        window.STOPLOAD()
                         console.log("ERROR, ", resp)
                         alert("Couldn't delete the schedule")
                     },
@@ -220,10 +229,12 @@ $(document).ready(function () {
                 });
             },
             extendFunc: function( numdays ) {
+                STARTLOAD()
                 var self = this
                 $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/extendschedule", 
                     type: 'POST',
                     success: function(result){
+                        window.STOPLOAD()
                         if (result.httpCode == 200) {
                             location.reload(); //reload page
                         } else {
@@ -233,6 +244,7 @@ $(document).ready(function () {
                         }
                     },
                     error: function(resp) {
+                        window.STOPLOAD()
                         console.log("ERROR, ", resp)
                         alert("Couldn't extend the schedule")
                     },
@@ -265,11 +277,13 @@ $(document).ready(function () {
                 }
             },
             reload: function() {
+                STARTLOAD()
                 var get_url = "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/organizer/getschedule?secretKey=" + this.secretKey;
                     var self = this
                     $.ajax({url: get_url, 
                         type: 'GET',
                         success: function(result){
+                            window.STOPLOAD()
                             if (result.httpcode == 200) {
                                 self.showAlert = false;
                                 meeting_grid_vue.grid_data = result.data;
@@ -286,6 +300,7 @@ $(document).ready(function () {
                             }
                         },
                         error: function(resp) {
+                            window.STOPLOAD()
                             console.log("ERROR, ", resp)
                             self.showAlert = true;
                             setURL(updateQueryStringParameter(window.location.href, "secret", ""))

@@ -56,9 +56,11 @@ Vue.component('meeting-search', {
         },
         submit: function() {
             var self = this
+            STARTLOAD()
             $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/participant/searchopenslots", 
                 type: 'POST',
                 success: function(result){
+                    window.STOPLOAD()
                     if (result.httpCode == 200) {
                         self.results = (result.timeslot_lst !== undefined)? result.timeslot_lst : {}
                         if (result.timeslot_lst !== undefined) {
@@ -69,6 +71,7 @@ Vue.component('meeting-search', {
                     }
                 },
                 error: function(resp) {
+                    window.STOPLOAD()
                     alert('Error. Could not search.')
                 },
                 dataType: 'json',
@@ -193,9 +196,11 @@ $(document).ready(function(){
             reload: function() {
                 var get_url = "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/participant/getschedule?id=" + this.key;
                 var self = this
+                STARTLOAD()
                 $.ajax({url: get_url, 
                     type: 'GET',
                     success: function(result){
+                        window.STOPLOAD()
                         if (result.httpcode == 200) {
                             self.showAlert = false;
                             grid_holder.grid_data = result.data;
@@ -215,6 +220,7 @@ $(document).ready(function(){
                         }
                     },
                     error: function(resp) {
+                        window.STOPLOAD()
                         console.log("ERROR, ", resp)
                         self.showAlert = true;
                         if (self.alertError) {

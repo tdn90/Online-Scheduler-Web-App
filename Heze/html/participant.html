@@ -38,6 +38,9 @@
       <meeting-search v-if="has_data" v-bind:schedid="key" v-bind:start="grid_data.startTime" v-bind:end="grid_data.endTime" 
         v-bind:duration="grid_data.meetingDuration" v-on:cancel="cancel($event)" v-on:register="register($event)" ref="search"></meeting-search>
     </div>
+    <div id="loadingHolder">
+      <fullpage-load v-bind:loading="isLoad" v-bind:timeout="timeout"></fullpage-load>
+    </div>
   </div>
 
   <!------------>
