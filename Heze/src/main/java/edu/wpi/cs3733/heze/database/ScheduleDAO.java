@@ -276,14 +276,46 @@ public class ScheduleDAO {
     }
 
     //SysAdmin
-    public List<Schedule> getScheduleList(int hours) throws Exception{
+    public List<Schedule> getScheduleListHour(int hours) throws Exception{
     	try {
     		List<Schedule> schedule_lst = new ArrayList<Schedule>();
 
-    		String query = "select scheduleID from Schedule where (dateCreated + interval ? hour) <= current_timestamp;";
+    		String query = "select scheduleID from Schedule where (dateCreated - interval 5 hour + interval ? hour) >= (current_timestamp - interval 5 hour);";
    
     		PreparedStatement ps = conn.prepareStatement(query);
 			ps.setInt(1, hours);
+			
+    		ResultSet resultSet = ps.executeQuery();
+    		
+    		boolean found = false;
+    		// at most one resultSet can be retrieved
+    		while (resultSet.next()) {
+    			schedule_lst.add(getScheduleByID(resultSet.getString("scheduleID")));
+    			found = true;
+    		}
+    		resultSet.close();
+    		ps.close();
+    		
+    		if (!found) {
+    			return null;
+    		}
+    		
+    		return schedule_lst;
+    	} catch (Exception e) {
+    		e.printStackTrace();
+            throw new Exception("Failed in getting list schedule: " + e.getMessage());
+    	}
+    }
+    
+  //SysAdmin
+    public List<Schedule> getScheduleListDay(int days) throws Exception{
+    	try {
+    		List<Schedule> schedule_lst = new ArrayList<Schedule>();
+
+    		String query = "select scheduleID from Schedule where (dateCreated - interval 5 hour + interval ? day) <= (current_timestamp - interval 5 hour);";
+   
+    		PreparedStatement ps = conn.prepareStatement(query);
+			ps.setInt(1, days);
 			
     		ResultSet resultSet = ps.executeQuery();
     		

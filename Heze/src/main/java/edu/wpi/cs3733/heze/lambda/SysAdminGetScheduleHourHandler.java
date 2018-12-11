@@ -18,10 +18,9 @@ import com.google.gson.Gson;
 
 import edu.wpi.cs3733.heze.database.ScheduleDAO;
 import edu.wpi.cs3733.heze.entity.Schedule;
-import edu.wpi.cs3733.heze.lambda.api.SysAdminGetScheduleRequest;
-import edu.wpi.cs3733.heze.lambda.api.SysAdminGetScheduleResponse;
+import edu.wpi.cs3733.heze.lambda.api.SysAdminGetScheduleHourResponse;
 
-public class SysAdminGetScheduleHandler implements RequestStreamHandler {
+public class SysAdminGetScheduleHourHandler implements RequestStreamHandler {
 public LambdaLogger logger = null;
 	
     @Override
@@ -32,7 +31,7 @@ public LambdaLogger logger = null;
     	
     	JSONObject headerJson = new JSONObject();
 		headerJson.put("Content-Type",  "application/json");  // not sure if needed anymore?
-		headerJson.put("Access-Control-Allow-Methods", "POST,OPTIONS");
+		headerJson.put("Access-Control-Allow-Methods", "GET,OPTIONS");
 	    headerJson.put("Access-Control-Allow-Origin",  "*");
 	        
 		JSONObject responseJson = new JSONObject();
@@ -41,7 +40,7 @@ public LambdaLogger logger = null;
 		String body;
 		boolean processed = false;
 		
-		SysAdminGetScheduleResponse response = new SysAdminGetScheduleResponse (null, 400);
+		SysAdminGetScheduleHourResponse response = new SysAdminGetScheduleHourResponse (null, 400);
 		
 		try {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(input));
@@ -56,32 +55,34 @@ public LambdaLogger logger = null;
 		        processed = true;
 		        body = null;
 			} else {
-				body = (String)event.get("body");
+				JSONObject qparams = (JSONObject) event.get("queryStringParameters");
+				body = (String)qparams.get("hours");
+				
 				if (body == null) {
+					response = new SysAdminGetScheduleHourResponse(null, 409);  // unable to process input
 					body = event.toJSONString();  // this is only here to make testing easier
 				}
 			}
 		} catch (ParseException pe) {
 			logger.log("Exception parsing:" + pe.toString());
-			response = new SysAdminGetScheduleResponse(null, 405);  // unable to process input
+			response = new SysAdminGetScheduleHourResponse(null, 405);  // unable to process input
 	        processed = true;
 	        body = null;
 		}
 		
 		if (!processed) {
-			SysAdminGetScheduleRequest req = new Gson().fromJson(body, SysAdminGetScheduleRequest.class);
-			logger.log(req.toString());
 			ArrayList<Schedule> schedule_lst = new ArrayList<Schedule>();
 		
 			try {
-				schedule_lst = (ArrayList<Schedule>) new ScheduleDAO().getScheduleList(req.hours);
-				response = new SysAdminGetScheduleResponse(schedule_lst, 200);
+				schedule_lst = (ArrayList<Schedule>) new ScheduleDAO().getScheduleListHour(Integer.parseInt(body));
+				response = new SysAdminGetScheduleHourResponse(schedule_lst, 200);
 				logger.log("Create response: " + response.toString());
+				logger.log("Number of hours" + body);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				logger.log("Exception writing to DB: " + e.toString());
-				response = new SysAdminGetScheduleResponse(schedule_lst, 405);
+				response = new SysAdminGetScheduleHourResponse(schedule_lst, 405);
 			}
 			//logger.log("Create a schedule with the name: " + req.name);
 
