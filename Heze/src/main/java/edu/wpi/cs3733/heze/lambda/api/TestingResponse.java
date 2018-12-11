@@ -1,9 +1,9 @@
 package edu.wpi.cs3733.heze.lambda.api;
 
-public class PostResponse {
+public class TestingResponse {
 	public final String body;
 	
-	public PostResponse(String b) {
+	public TestingResponse(String b) {
 		body = b;
 	}
 }
