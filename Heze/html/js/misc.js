@@ -14,7 +14,6 @@ Vue.component('fullpage-load', {
     },
     watch: {
         loading: function(val, old) {
-            console.log(val)
             var self = this
             if (val) {
                 this.timeout_handler = setTimeout(function(){ 
@@ -36,7 +35,7 @@ Vue.component('fullpage-load', {
         <div>
             <div class="cover" v-if="is_show">
                 <div style="position: absolute; top:25%; text-align:center; width:100vw">
-                    <h1 class="text-light">Loading<h1>
+                    <h1 class="text-light">Loading</h1>
                     <h3 class="text-light">Please Wait</h3>
                 </div>
                 <div class="pong-loader"></div>

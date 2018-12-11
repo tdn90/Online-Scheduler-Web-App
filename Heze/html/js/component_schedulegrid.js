@@ -251,10 +251,13 @@ Vue.component('meeting-schedule-grid', {
             this.$emit('extend-me', this.extendLength * ((this.extendMode == "End")? 1 : -1))
         },
         getCellClass: function(slot) {
+            if (this.mode != "organizer") {
+                return ""
+            }
             if (slot.organizerAvailable) {
-                return "table-light"
+                return "table-light hovercolor"
             } else {
-                return "table-secondary"
+                return "table-secondary hovercolor"
             }
         }
     },
@@ -280,13 +283,13 @@ Vue.component('meeting-schedule-grid', {
                     <i class="material-icons mr-1" style="transform: rotate(90deg)">unfold_more</i>
                     <span>Add Days</span>
                 </button>
-            </div><br />
-            <div class="width:100%" role="toolbar"> <!-- Legend -->
+            </div><br v-if="mode == 'organizer'" />
+            <div class="width:100%" role="toolbar" v-if="mode == 'organizer'"> <!-- Legend -->
                 <strong>Legend:</strong>
                 <div class=" align-content-between d-flex" style="padding:10px">
                     <div class="table-secondary legend-key"></div> &nbsp;&nbsp; Timeslot unavailable &nbsp;&nbsp; <div class="table-light legend-key"></div> &nbsp;&nbsp; Timeslot available
                 </div>
-                <div v-if="mode == 'organizer'">
+                <div>
                     Click on a timeslot to toggle its availability.
                 </div>
             </div>
@@ -327,7 +330,7 @@ Vue.component('meeting-schedule-grid', {
                                 </center>
                             </div>
                         </td>
-                        <td v-for="date in value.days.slice((page-1)*5,page*5)" v-bind:class="getCellClass(date.slots[slot[0]]) + ' hovercolor'" v-on:click="toggle(date.slots[slot[0]])">
+                        <td v-for="date in value.days.slice((page-1)*5,page*5)" v-bind:class="getCellClass(date.slots[slot[0]])" v-on:click="toggle(date.slots[slot[0]])">
                             <div v-if="slot[0] < date.slots.length && date.slots[slot[0]].meeting == null && date.slots[slot[0]].organizerAvailable">
                                 <button v-if="mode == 'participant'" class="btn btn-primary justify-content-center align-content-between d-flex"
                                 data-toggle="modal" data-target="#registerModal" v-on:click="registerOpenFunc(date.slots[slot[0]])">
