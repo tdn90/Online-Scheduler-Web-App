@@ -30,20 +30,20 @@
     <div class="row" id="orgpage">
       <div class="col-lg-6">
         <div class="container-fluid">
-          <schedules-old></schedules-old>
+          <schedules-old ref="old" v-on:reload="reload"></schedules-old>
         </div>
       </div>
 
       <div class="col-lg-6">
         <div class="container-fluid">
-          <schedule-recents></schedule-recents>
+          <schedule-recents ref="recent"></schedule-recents>
         </div>
       </div>
       </ul>
     </div>
-
-  </div>
-  </div>
+    <div id="loadingHolder">
+      <fullpage-load v-bind:loading="isLoad" v-bind:timeout="timeout"></fullpage-load>
+    </div>
   </div>
 </body>
 

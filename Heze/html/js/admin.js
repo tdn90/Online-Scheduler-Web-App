@@ -9,9 +9,11 @@ Vue.component('schedule-recents', {
     methods: {
         get: function() {
             var self = this
-            $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/sysadmin/getschedule?hours=" + self.duration, 
+            STARTLOAD()
+            $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/sysadmin/getschedulehour?hours=" + self.duration, 
                 type: 'GET',
                 success: function(result){
+                    window.STOPLOAD()
                     if (result.httpCode == 200) {
                         self.results = (result.schedule_lst !== undefined)? result.schedule_lst : {}
                         if (result.schedule_lst !== undefined) {
@@ -22,6 +24,7 @@ Vue.component('schedule-recents', {
                     }
                 },
                 error: function(resp) {
+                    window.STOPLOAD()
                     alert('Error. Could not search.')
                 },
             });
@@ -75,9 +78,11 @@ Vue.component('schedules-old', {
         },
         review: function() {
             var self = this
-            $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/sysadmin/getschedule?hours=" + self.duration, 
+            STARTLOAD()
+            $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/sysadmin/getscheduleday?days=" + self.duration, 
                 type: 'GET',
                 success: function(result){
+                    window.STOPLOAD()
                     if (result.httpCode == 200) {
                         self.results = (result.schedule_lst !== undefined)? result.schedule_lst : {}
                         if (result.schedule_lst !== undefined) {
@@ -88,12 +93,37 @@ Vue.component('schedules-old', {
                     }
                 },
                 error: function(resp) {
+                    window.STOPLOAD()
                     alert('Error. Could not search.')
                 },
             });
         },
         deleteFunc: function() {
-            //todo implement
+            var self = this
+            STARTLOAD()
+            $.ajax({url: "https://97xvmjynw9.execute-api.us-east-1.amazonaws.com/Alpha/sysadmin/deleteschedule", 
+                type: 'DELETE',
+                success: function(result){
+                    window.STOPLOAD()
+                    if (result.httpCode == 200) {
+                        self.results = (result.schedule_lst !== undefined)? result.schedule_lst : {}
+                        if (result.schedule_lst !== undefined) {
+                            self.hasResults = true;
+                        }
+                        self.$emit("reload")
+                    } else {
+                        alert('Error. Search failed.')
+                    }
+                },
+                error: function(resp) {
+                    window.STOPLOAD()
+                    alert('Error. Could not search.')
+                },
+                dataType: 'json',
+                data: JSON.stringify({
+                    days: self.duration
+                })
+            });
         },
         tsString: function(tsobj) {
             return moment(tsobj.date.date.year + "-" + tsobj.date.date.month + "-" + tsobj.date.date.day + " " + tsobj.date.time.hour + ":" + tsobj.date.time.minute, "YYYY-MM-DD H:mm").format("dddd MM/DD/YYYY h:mm a")
@@ -136,6 +166,18 @@ Vue.component('schedules-old', {
 })
 $(document).ready(function() {
     var orgpage = new Vue({
-        el: "#orgpage"
+        el: "#orgpage",
+        methods: {
+            reload: function(which) {
+                if (which == "old") {
+                    this.$refs.old.clearResults()
+                } else if (which == "recent") {
+                    this.$refs.recent.clearResults()
+                } else {
+                    this.$refs.old.clearResults()
+                    this.$refs.recent.clearResults()
+                }
+            }
+        }
     })
 })
