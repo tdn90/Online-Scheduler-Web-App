@@ -71,6 +71,11 @@ public class Schedule {
 		this.days.add(day);
 	}
 	
+	public int getSizeofList()
+	{
+		return days.size();
+	}
+	
 	public Iterator<ScheduleDate> daysIt() {
 		return days.iterator();
 	}

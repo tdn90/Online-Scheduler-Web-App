@@ -221,9 +221,12 @@ public class CreateScheduleHandlerTest {
 
 	@Test
 	public void testExtendSchedule() throws IOException {
+		int daystotest = 1;
+		Schedule sc = organizerGetSchedule();
+		int daysbefore = sc.getSizeofList();
 		ExtendScheduleHandler handler = new ExtendScheduleHandler();
 		
-		ExtendScheduleRequest req = new ExtendScheduleRequest(1, schedule_secretKey);
+		ExtendScheduleRequest req = new ExtendScheduleRequest(daystotest, sc.getSchedule_secretKey());
 		String extendScheduleRequest = new Gson().toJson(req);
 		System.out.println(extendScheduleRequest);
 		String jsonRequest = new Gson().toJson(new PostRequest(extendScheduleRequest));
@@ -237,7 +240,8 @@ public class CreateScheduleHandlerTest {
         TestingResponse post = new Gson().fromJson(output.toString(), TestingResponse.class);
         ExtendScheduleResponse resp = new Gson().fromJson(post.body, ExtendScheduleResponse.class);
         assertEquals(200, resp.httpCode);
-        //TODO: check that the schedule was successfully extended
+        sc = organizerGetSchedule();
+        assertEquals(daysbefore + daystotest, sc.getSizeofList());
 	}
 	
 	@AfterClass
