@@ -283,22 +283,6 @@ public class CreateScheduleHandlerTest {
         sc = organizerGetSchedule();
         assertEquals(daysbefore + daystotest, sc.getSizeofList());
 	}
-	
-	@Test
-	public void testSysAdminDeleteScheduleList() throws IOException {
-		int days = 3;
-		SysAdminDeleteScheduleHandler handler = new SysAdminDeleteScheduleHandler();
-		String req = new Gson().toJson(new SysAdminDeleteScheduleRequest(days));
-		String postable = new Gson().toJson(new PostRequest(req));
-		
-		InputStream input = new ByteArrayInputStream(postable.getBytes());
-        OutputStream output = new ByteArrayOutputStream();
-        
-        handler.handleRequest(input, output, createContext("delete meeting list"));
-        TestingResponse response_holder = new Gson().fromJson(output.toString(), TestingResponse.class);
-        SysAdminDeleteScheduleResponse response = new Gson().fromJson(response_holder.body, SysAdminDeleteScheduleResponse.class);
-        assertEquals(200, response.httpCode);
-	}
         
 	@Test 
 	public void testGetOpenSlotsHandler() throws IOException {
