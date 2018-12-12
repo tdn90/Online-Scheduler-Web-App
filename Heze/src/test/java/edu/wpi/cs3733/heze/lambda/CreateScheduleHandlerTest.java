@@ -41,6 +41,8 @@ import edu.wpi.cs3733.heze.lambda.api.RegisterMeetingRequest;
 import edu.wpi.cs3733.heze.lambda.api.RegisterMeetingResponse;
 import edu.wpi.cs3733.heze.lambda.api.SetAvailabilityForTimeRequest;
 import edu.wpi.cs3733.heze.lambda.api.SetAvailabilityForTimeResponse;
+import edu.wpi.cs3733.heze.lambda.api.SysAdminDeleteScheduleRequest;
+import edu.wpi.cs3733.heze.lambda.api.SysAdminDeleteScheduleResponse;
 import edu.wpi.cs3733.heze.lambda.api.SetAvailabilityForDayRequest;
 import edu.wpi.cs3733.heze.lambda.api.SetAvailabilityForDayResponse;
 import edu.wpi.cs3733.heze.lambda.api.TestingResponse;
@@ -279,8 +281,37 @@ public class CreateScheduleHandlerTest {
         assertEquals(daysbefore + daystotest, sc.getSizeofList());
 	}
 	
+	@Test
+	public void testSysAdminDeleteScheduleList() throws IOException {
+		int days = 3;
+		SysAdminDeleteScheduleHandler handler = new SysAdminDeleteScheduleHandler();
+		String req = new Gson().toJson(new SysAdminDeleteScheduleRequest(days));
+		String postable = new Gson().toJson(new PostRequest(req));
+		
+		InputStream input = new ByteArrayInputStream(postable.getBytes());
+        OutputStream output = new ByteArrayOutputStream();
+        
+        handler.handleRequest(input, output, createContext("delete meeting list"));
+        TestingResponse response_holder = new Gson().fromJson(output.toString(), TestingResponse.class);
+        SysAdminDeleteScheduleResponse response = new Gson().fromJson(response_holder.body, SysAdminDeleteScheduleResponse.class);
+        assertEquals(200, response.httpCode);
+	}
+	
 	@AfterClass
 	public static void testDeleteSchedule() throws IOException {
+//		int days = 3;
+//		SysAdminDeleteScheduleHandler handler = new SysAdminDeleteScheduleHandler();
+//		String req = new Gson().toJson(new SysAdminDeleteScheduleRequest(days));
+//		String postable = new Gson().toJson(new PostRequest(req));
+//		
+//		InputStream input = new ByteArrayInputStream(postable.getBytes());
+//        OutputStream output = new ByteArrayOutputStream();
+//        
+//        handler.handleRequest(input, output, createContext("delete meeting list"));
+//        TestingResponse response_holder = new Gson().fromJson(output.toString(), TestingResponse.class);
+//        SysAdminDeleteScheduleResponse response = new Gson().fromJson(response_holder.body, SysAdminDeleteScheduleResponse.class);
+//        assertEquals(200, response.httpCode);
+		
 		DeleteScheduleHandler handler = new DeleteScheduleHandler();
 		String req = new Gson().toJson(new DeleteScheduleRequest(schedule_ID, schedule_secretKey));
 		String postable = new Gson().toJson(new PostRequest(req));
