@@ -31,6 +31,8 @@ import edu.wpi.cs3733.heze.lambda.api.CreateScheduleResponse;
 import edu.wpi.cs3733.heze.lambda.api.DeleteScheduleRequest;
 import edu.wpi.cs3733.heze.lambda.api.DeleteScheduleResponse;
 import edu.wpi.cs3733.heze.lambda.api.GetScheduleResponse;
+import edu.wpi.cs3733.heze.lambda.api.ExtendScheduleRequest;
+import edu.wpi.cs3733.heze.lambda.api.ExtendScheduleResponse;
 import edu.wpi.cs3733.heze.lambda.api.PostRequest;
 import edu.wpi.cs3733.heze.lambda.api.RegisterMeetingRequest;
 import edu.wpi.cs3733.heze.lambda.api.RegisterMeetingResponse;
@@ -172,8 +174,24 @@ public class CreateScheduleHandlerTest {
 	}
 
 	@Test
-	public void testExtendSchedule() {
+	public void testExtendSchedule() throws IOException {
+		ExtendScheduleHandler handler = new ExtendScheduleHandler();
 		
+		ExtendScheduleRequest req = new ExtendScheduleRequest(1, schedule_secretKey);
+		String extendScheduleRequest = new Gson().toJson(req);
+		System.out.println(extendScheduleRequest);
+		String jsonRequest = new Gson().toJson(new PostRequest(extendScheduleRequest));
+		System.out.println(jsonRequest);
+		
+		InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
+        OutputStream output = new ByteArrayOutputStream();
+        
+        handler.handleRequest(input, output, createContext("extend schedule"));
+        
+        TestingResponse post = new Gson().fromJson(output.toString(), TestingResponse.class);
+        ExtendScheduleResponse resp = new Gson().fromJson(post.body, ExtendScheduleResponse.class);
+        assertEquals(200, resp.httpCode);
+        //TODO: check that the schedule was successfully extended
 	}
 	
 	@AfterClass

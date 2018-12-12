@@ -6,7 +6,7 @@ public class ExtendScheduleResponse {
 		this.httpCode = httpCode;
 	}
 
-	int httpCode;
+	public int httpCode;
 	
 	
 
