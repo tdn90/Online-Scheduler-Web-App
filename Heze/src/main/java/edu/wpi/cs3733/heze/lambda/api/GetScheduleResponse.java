@@ -4,7 +4,7 @@ import edu.wpi.cs3733.heze.entity.Schedule;
 
 public class GetScheduleResponse {
 	int httpcode;
-	Schedule data;
+	public Schedule data;
 	public GetScheduleResponse(int hc) //Error code only constructor
 	{
 		this.httpcode = hc;
