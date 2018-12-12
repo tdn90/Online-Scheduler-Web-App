@@ -25,13 +25,13 @@ public class Meeting {
 		return id;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
+//	public void setId(String id) {
+//		this.id = id;
+//	}
 
-	public TimeSlot getTimeSlot() {
-		return tl;
-	}
+//	public TimeSlot getTimeSlot() {
+//		return tl;
+//	}
 
 	public void setTimeSlot(TimeSlot tl) {
 		this.tl = tl;
@@ -41,17 +41,17 @@ public class Meeting {
 		return participant;
 	}
 
-	public void setParticipant(String participant) {
-		this.participant = participant;
-	}
+//	public void setParticipant(String participant) {
+//		this.participant = participant;
+//	}
 
 	public String getSecretKey() {
 		return secretKey;
 	}
 
-	public void setSecretKey(String secretKey) {
-		this.secretKey = secretKey;
-	}
+//	public void setSecretKey(String secretKey) {
+//		this.secretKey = secretKey;
+//	}
 	
 	
 	

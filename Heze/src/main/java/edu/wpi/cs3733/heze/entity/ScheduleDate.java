@@ -14,9 +14,9 @@ public class ScheduleDate{
 		return date;
 	}
 
-	public void setDate(LocalDateTime date) {
-		this.date = date;
-	}
+//	public void setDate(LocalDateTime date) {
+//		this.date = date;
+//	}
 
 	public static ScheduleDate makeDay(LocalDateTime date, int startHour, int endHour, int meetingDuration) {
 		String id = Utilities.generateKey(30);
@@ -60,15 +60,15 @@ public class ScheduleDate{
 		return id;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
+//	public void setId(String id) {
+//		this.id = id;
+//	}
 	
-	public List<TimeSlot> getSlots() {
-		return slots;
-	}
+//	public List<TimeSlot> getSlots() {
+//		return slots;
+//	}
 
-	public void setSlots(List<TimeSlot> slots) {
-		this.slots = slots;
-	}
+//	public void setSlots(List<TimeSlot> slots) {
+//		this.slots = slots;
+//	}
 }

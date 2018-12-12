@@ -92,9 +92,9 @@ public class Schedule {
 		return days;
 	}
 
-	public void setDays(List<ScheduleDate> days) {
-		this.days = days;
-	}
+//	public void setDays(List<ScheduleDate> days) {
+//		this.days = days;
+//	}
 
 	public String getSchedule_secretKey() {
 		return schedule_secretKey;
@@ -108,25 +108,25 @@ public class Schedule {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
+//	public void setName(String name) {
+//		this.name = name;
+//	}
 
 	public int getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(int startTime) {
-		this.startTime = startTime;
-	}
+//	public void setStartTime(int startTime) {
+//		this.startTime = startTime;
+//	}
 
 	public int getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(int endTime) {
-		this.endTime = endTime;
-	}
+//	public void setEndTime(int endTime) {
+//		this.endTime = endTime;
+//	}
 
 	public int getMeetingDuration() {
 		return meetingDuration;

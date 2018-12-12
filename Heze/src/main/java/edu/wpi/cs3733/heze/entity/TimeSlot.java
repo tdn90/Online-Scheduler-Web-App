@@ -49,29 +49,29 @@ public class TimeSlot {
 		return timeslotID;
 	}
 
-	public void setTimeslotID(String timeslotID) {
-		this.timeslotID = timeslotID;
-	}
+//	public void setTimeslotID(String timeslotID) {
+//		this.timeslotID = timeslotID;
+//	}
 
 	public ScheduleTime getStartTime() {
 		return startTime;
 	}
 
-	public void setStartTime(ScheduleTime startTime) {
-		this.startTime = startTime;
-	}
+//	public void setStartTime(ScheduleTime startTime) {
+//		this.startTime = startTime;
+//	}
 
 	public int getMeetingDuration() {
 		return meetingDuration;
 	}
 
-	public void setMeetingDuration(int meetingDuration) {
-		this.meetingDuration = meetingDuration;
-	}
+//	public void setMeetingDuration(int meetingDuration) {
+//		this.meetingDuration = meetingDuration;
+//	}
 
-	public Meeting getMeeting() {
-		return meeting;
-	}
+//	public Meeting getMeeting() {
+//		return meeting;
+//	}
 
 	public void setMeeting(Meeting meeting) {
 		this.meeting = meeting;
@@ -81,7 +81,7 @@ public class TimeSlot {
 		return organizerAvailable;
 	}
 
-	public void setOrganizerAvailable(boolean organizerAvailable) {
-		this.organizerAvailable = organizerAvailable;
-	}
+//	public void setOrganizerAvailable(boolean organizerAvailable) {
+//		this.organizerAvailable = organizerAvailable;
+//	}
 }
