@@ -84,9 +84,9 @@ public class Schedule {
 		return scheduleID;
 	}
 
-	public void setScheduleID(String scheduleID) {
-		this.scheduleID = scheduleID;
-	}
+//	public void setScheduleID(String scheduleID) {
+//		this.scheduleID = scheduleID;
+//	}
 
 	public List<ScheduleDate> getDays() {
 		return days;
