@@ -39,6 +39,8 @@ import edu.wpi.cs3733.heze.lambda.api.ExtendScheduleResponse;
 import edu.wpi.cs3733.heze.lambda.api.PostRequest;
 import edu.wpi.cs3733.heze.lambda.api.RegisterMeetingRequest;
 import edu.wpi.cs3733.heze.lambda.api.RegisterMeetingResponse;
+import edu.wpi.cs3733.heze.lambda.api.SetAvailabilityForTimeRequest;
+import edu.wpi.cs3733.heze.lambda.api.SetAvailabilityForTimeResponse;
 import edu.wpi.cs3733.heze.lambda.api.TestingResponse;
 import edu.wpi.cs3733.heze.lambda.api.ToggleTimeSlotRequest;
 import edu.wpi.cs3733.heze.lambda.api.ToggleTimeSlotResponse;
@@ -215,8 +217,22 @@ public class CreateScheduleHandlerTest {
 	}
 	
 	@Test 
-	public void testSetAvailabilityForTime() {
+	public void testSetAvailabilityForTime() throws IOException {
+		SetAvailabilityForTimeHandler handler = new SetAvailabilityForTimeHandler();
 		
+		SetAvailabilityForTimeRequest req = new SetAvailabilityForTimeRequest(32400000, schedule_ID, false);
+		String setAvailabilityForTimeRequest = new Gson().toJson(req);
+		
+		String jsonRequest = new Gson().toJson(new PostRequest(setAvailabilityForTimeRequest));
+		
+		InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
+        OutputStream output = new ByteArrayOutputStream();
+        
+        handler.handleRequest(input, output, createContext("Toggle availability for time"));
+        
+        TestingResponse post = new Gson().fromJson(output.toString(), TestingResponse.class);
+        SetAvailabilityForTimeResponse resp = new Gson().fromJson(post.body, SetAvailabilityForTimeResponse.class);
+        assertEquals(200, resp.httpCode);
 	}
 
 	@Test
