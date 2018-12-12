@@ -45,6 +45,7 @@ public class MeetingDAO {
      * @param meetingID
      * @throws Exception
      */
+    /*
     public boolean delMeetingByID(String meetingID) throws Exception {
 		try {
 			PreparedStatement ps = conn.prepareStatement("delete FROM Meeting WHERE MeetingID=?;");
@@ -58,6 +59,7 @@ public class MeetingDAO {
 			throw new Exception("Failed in getting constant: " + e.getMessage());
 		}
     }
+    */
 
     /**
      * DELETE (by secret key)
