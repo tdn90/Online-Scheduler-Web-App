@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
 import java.util.Iterator;
+import java.util.List;
 
 import org.json.simple.parser.ParseException;
 import org.junit.AfterClass;
@@ -36,6 +37,8 @@ import edu.wpi.cs3733.heze.lambda.api.DeleteScheduleResponse;
 import edu.wpi.cs3733.heze.lambda.api.GetScheduleResponse;
 import edu.wpi.cs3733.heze.lambda.api.ExtendScheduleRequest;
 import edu.wpi.cs3733.heze.lambda.api.ExtendScheduleResponse;
+import edu.wpi.cs3733.heze.lambda.api.GetOpenSlotsRequest;
+import edu.wpi.cs3733.heze.lambda.api.GetOpenSlotsResponse;
 import edu.wpi.cs3733.heze.lambda.api.PostRequest;
 import edu.wpi.cs3733.heze.lambda.api.RegisterMeetingRequest;
 import edu.wpi.cs3733.heze.lambda.api.RegisterMeetingResponse;
@@ -277,6 +280,27 @@ public class CreateScheduleHandlerTest {
         assertEquals(200, resp.httpCode);
         sc = organizerGetSchedule();
         assertEquals(daysbefore + daystotest, sc.getSizeofList());
+	}
+	
+	@Test 
+	public void testGetOpenSlotsHandler() throws IOException {
+		GetOpenSlotsHandler handler = new GetOpenSlotsHandler();
+		
+		GetOpenSlotsRequest req = new GetOpenSlotsRequest(schedule_ID, 12, 2018, -9999, -9999, 32400000);
+		String getOpenSlotsRequest = new Gson().toJson(req);
+		
+		String jsonRequest = new Gson().toJson(new PostRequest(getOpenSlotsRequest));
+		
+		InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
+        OutputStream output = new ByteArrayOutputStream();
+        
+        handler.handleRequest(input, output, createContext("Get open slots"));
+        
+        TestingResponse post = new Gson().fromJson(output.toString(), TestingResponse.class);
+        GetOpenSlotsResponse resp = new Gson().fromJson(post.body, GetOpenSlotsResponse.class);
+        List<TimeSlot> list = resp.timeslot_lst;
+        System.out.println(new Gson().toJson(list).toString());
+        assertEquals(200, resp.httpCode);
 	}
 	
 	@AfterClass
