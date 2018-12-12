@@ -494,7 +494,7 @@ Vue.component('meeting-schedule-grid', {
                     </div>
                     <div class="modal-body">
                         <p>You can extend the duration of your schedule by adding days to the beginning or the end of it:</p><br />
-                        Add <input type="number" class="form-control" style="width:100px; display: inline-block" minimum="1" v-model:value="extendLength"/> days to the <radio-button-group v-bind:options="['Beginning', 'End']" v-model="extendMode"></radio-button-group><br /> of the schedule.
+                        Add <input type="number" class="form-control" style="width:100px; display: inline-block" min="1" v-model:value="extendLength"/> days to the <radio-button-group v-bind:options="['Beginning', 'End']" v-model="extendMode"></radio-button-group><br /> of the schedule.
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-primary justify-content-center align-content-between d-flex" v-on:click="extendFunc">

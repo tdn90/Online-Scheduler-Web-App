@@ -174,8 +174,10 @@ $(document).ready(function () {
                                 console.log("Eventually use this data: " + JSON.stringify(result))
                                 share_modal.secretKey = resulta.secretKey;
                                 share_modal.id = result.data.scheduleID;
+                                setURL(updateQueryStringParameter(window.location.href, "secret", resulta.secretKey))
                                 $('#newModal').modal('hide')
                             } else {
+                                setURL(updateQueryStringParameter(window.location.href, "secret", ""))
                                 console.log("backend http code not 200")
                                 self.showAlert = true;
                             }

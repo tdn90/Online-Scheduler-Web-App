@@ -47,6 +47,7 @@
     <h1>Organizer</h1>
     <hr />
     <div id="meeting-echedule-holder-vue">
+      <h3 v-if="hasKey" class="text-muted">Your Secret Key is <strong>{{key}}</strong>. To share to participants, click the share button in the top right.<br /><br /></h3>
       <meeting-schedule-grid v-if="hasKey" mode="organizer" v-bind:value="grid_data" v-on:reload-evt="reload" v-on:delete-me="deletefunc" v-on:extend-me="extendFunc($event)"></meeting-schedule-grid>
     </div>
     <div id="loadingHolder">
