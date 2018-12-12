@@ -13,6 +13,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.time.LocalDateTime;
+import java.util.Iterator;
 
 import org.json.simple.parser.ParseException;
 import org.junit.AfterClass;
@@ -24,6 +25,8 @@ import com.amazonaws.services.lambda.runtime.Context;
 import com.google.gson.Gson;
 
 import edu.wpi.cs3733.heze.entity.Schedule;
+import edu.wpi.cs3733.heze.entity.ScheduleDate;
+import edu.wpi.cs3733.heze.entity.TimeSlot;
 import edu.wpi.cs3733.heze.lambda.api.CancelMeetingRequest;
 import edu.wpi.cs3733.heze.lambda.api.CancelMeetingResponse;
 import edu.wpi.cs3733.heze.lambda.api.CreateScheduleRequest;
@@ -59,16 +62,26 @@ public class CreateScheduleHandlerTest {
 		InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
         OutputStream output = new ByteArrayOutputStream();
         
-        handler.handleRequest(input, output, createContext("create schedule"));
+        handler.handleRequest(input, output, createContext("get org schedule"));
         
         TestingResponse get = new Gson().fromJson(output.toString(), TestingResponse.class);
         GetScheduleResponse resp = new Gson().fromJson(get.body, GetScheduleResponse.class);
-        //assertEquals(resp.httpcode, 200);
+        assertEquals(resp.httpcode, 200);
         return resp.data;
 	}
 	
-	public Schedule participantGetSchedule() {
-		return null;
+	public static Schedule participantGetSchedule() throws IOException {
+		ParticipantGetScheduleHandler handler = new ParticipantGetScheduleHandler();
+		String jsonRequest = "{\"queryStringParameters\": {\"id\":\"" +schedule_ID + "\"}}";
+		InputStream input = new ByteArrayInputStream(jsonRequest.getBytes());
+        OutputStream output = new ByteArrayOutputStream();
+        
+        handler.handleRequest(input, output, createContext("get part schedule"));
+        
+        TestingResponse get = new Gson().fromJson(output.toString(), TestingResponse.class);
+        GetScheduleResponse resp = new Gson().fromJson(get.body, GetScheduleResponse.class);
+        assertEquals(resp.httpcode, 200);
+        return resp.data;
 	}
 
 	@BeforeClass
@@ -94,24 +107,39 @@ public class CreateScheduleHandlerTest {
 	}
 	
 	@Test
-	public void testGetScheduleHandler() {
-		GetScheduleHandler handler = new GetScheduleHandler();
-		
+	public void testGetScheduleHandler() throws IOException {
+		Schedule s = organizerGetSchedule();
+		assertNotNull(s);
 	}
 	
 	@Test
-	public void testParticipantGetScheduleHandler() {
-		
+	public void testParticipantGetScheduleHandler() throws IOException {
+		Schedule s = participantGetSchedule();
+		assertNotNull(s);
 		
 	}
 	
 	@Test 
 	public void testRegisterForMeetingAndCancel() throws IOException {
 		
+		String tsid = "FAKEID";
+		
+		Schedule s = organizerGetSchedule();
+		Iterator<ScheduleDate> dateiter = s.daysIt();
+		while(dateiter.hasNext()) {
+			Iterator<TimeSlot> tsiter = dateiter.next().iterator();
+				while(dateiter.hasNext()) {
+					tsid = tsiter.next().getTimeslotID();
+					break; //just one
+				}
+			break; //just want one of them
+			
+		}
+		
 		String secretKeyMeeting = "";
 		
 		RegisterMeetingHandler handler = new RegisterMeetingHandler();
-		String req = new Gson().toJson(new RegisterMeetingRequest("FAKEID", "JUnit"));
+		String req = new Gson().toJson(new RegisterMeetingRequest(tsid, "JUnit"));
 		String postable = new Gson().toJson(new PostRequest(req));
 		
 		InputStream input = new ByteArrayInputStream(postable.getBytes());
@@ -139,6 +167,7 @@ public class CreateScheduleHandlerTest {
         
         TestingResponse response_holder2 = new Gson().fromJson(output2.toString(), TestingResponse.class);
         CancelMeetingResponse response2 = new Gson().fromJson(response_holder2.body, CancelMeetingResponse.class);
+        assertTrue(response2.httpCode == 200);
 		
 	}
 	
@@ -149,17 +178,34 @@ public class CreateScheduleHandlerTest {
 	@Test 
 	public void testToggleTimeSlot() throws IOException {
 		
-		ToggleTimeSlotAvailabilityHandler handler = new ToggleTimeSlotAvailabilityHandler();
-		String req = new Gson().toJson(new ToggleTimeSlotRequest("FAKE_TIMESLOT_ID"));
-		String postable = new Gson().toJson(new PostRequest(req));
+		String tsid = "FAKEID";
 		
-		InputStream input = new ByteArrayInputStream(postable.getBytes());
-        OutputStream output = new ByteArrayOutputStream();
-        
-        handler.handleRequest(input, output, createContext("toggle meeting"));
-        
-        TestingResponse response_holder = new Gson().fromJson(output.toString(), TestingResponse.class);
-        ToggleTimeSlotResponse response = new Gson().fromJson(response_holder.body, ToggleTimeSlotResponse.class);
+		Schedule s = organizerGetSchedule();
+		Iterator<ScheduleDate> dateiter = s.daysIt();
+		while(dateiter.hasNext()) {
+			Iterator<TimeSlot> tsiter = dateiter.next().iterator();
+				while(dateiter.hasNext()) {
+					tsid = tsiter.next().getTimeslotID();
+					break; //just one
+				}
+			break; //just want one of them
+			
+		}
+		
+		for (int i = 0; i < 2; i++) {
+			ToggleTimeSlotAvailabilityHandler handler = new ToggleTimeSlotAvailabilityHandler();
+			String req = new Gson().toJson(new ToggleTimeSlotRequest(tsid));
+			String postable = new Gson().toJson(new PostRequest(req));
+			
+			InputStream input = new ByteArrayInputStream(postable.getBytes());
+	        OutputStream output = new ByteArrayOutputStream();
+	        
+	        handler.handleRequest(input, output, createContext("toggle meeting"));
+	        
+	        TestingResponse response_holder = new Gson().fromJson(output.toString(), TestingResponse.class);
+	        ToggleTimeSlotResponse response = new Gson().fromJson(response_holder.body, ToggleTimeSlotResponse.class);
+	        assertEquals(200, response.httpCode);
+		}
         
 	}
 	
