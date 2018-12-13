@@ -76,20 +76,26 @@ public class RegisterMeetingHandler implements RequestStreamHandler {
 		if (!processed) {
 			RegisterMeetingRequest req = new Gson().fromJson(body, RegisterMeetingRequest.class);
 			logger.log(req.toString());
-
-			//Make a meeting
-			Meeting m = Meeting.createMeeting(req.name);
+			String timeSlotID = req.id;
+			String name = req.name;
+			
 			try {
 				MeetingDAO dao = new MeetingDAO();
-				if (req.name.length() < 1) {
+				// check valid name
+				if (name.length() < 1) {
 					response = new RegisterMeetingResponse(405);
-				} else if (dao.getMeeting(req.id) == null) {
-					dao.addMeeting(m, req.id);
-					response = new RegisterMeetingResponse(200, m);
-					logger.log("Create response: " + response.toString());
-				} else {
-					response = new RegisterMeetingResponse(304);
-					logger.log("Create response: " + response.toString());
+				}
+				else { 
+					// create the meeting 
+					Meeting m = Meeting.createMeeting(name);
+					
+					// try to add the meeting to the database
+					boolean addSuccesful = dao.addMeeting(m, timeSlotID);
+					if (addSuccesful) {
+						response = new RegisterMeetingResponse(200, m);
+					} else {
+						response = new RegisterMeetingResponse(403);
+					}
 				}
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

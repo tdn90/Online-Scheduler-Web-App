@@ -26,6 +26,12 @@ public class MeetingDAO {
     	String secretKey = meeting.getSecretKey();
     	
     	try {
+    		// perform a check if meeting already exists in the timeSlot
+    		TimeSlot slot = new TimeSlotDAO().getTimeSlot(timeSlotID);
+    		if (slot.hasMeeting()) {
+    			return false;
+    		}
+    		
 			PreparedStatement ps = conn.prepareStatement("Insert into Meeting values (?, ?, ?, ?);");
 			ps.setString(1, meetingID);
 			ps.setString(2, timeSlotID);

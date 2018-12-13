@@ -41,9 +41,9 @@ public class TimeSlot {
 		this.organizerAvailable = organizerAvailable;
 	}
 	
-//	boolean hasMeeting() {
-//		return meeting != null;
-//	}
+	public boolean hasMeeting() {
+		return meeting != null;
+	}
 
 	public String getTimeslotID() {
 		return timeslotID;
