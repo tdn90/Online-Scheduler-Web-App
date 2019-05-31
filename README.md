@@ -2,13 +2,6 @@
 
 This Maven, cloud-based project is an implementation of a web application built-from-scratch, allowing users to schedule meetings with each other as needed. The project (followed the Model-View-Controller pattern) is deployed on __AWS__, using its __Serverless Computing__, which involves __AWS IAM__, __AWS S3__, __AWS RDS__, __AWS Lambda__, __AWS API Gateway__.  
 
-## Links to Application
-[Organizer Page](https://s3.amazonaws.com/post.cs3733.online.scheduler/organizer.html)
-
-[Participant Page](https://s3.amazonaws.com/post.cs3733.online.scheduler/participant.html)
-
-[SysAdmin Page](https://s3.amazonaws.com/post.cs3733.online.scheduler/admin.html)
-
 ## Use Cases
 ### Organizer Features
 - Create a new meeting schedule (with its own user-friendly name, such as “Advising Schedule”) with a fixed timeslot duration (of 10,15,20,30, or 60 minutes) that is active from a given start date up until given ending date. For each day there is a daily start hour (such as 9:00 AM or 12:00 PM) and there is a daily end hour (such as 5:00 PM or 8:00 PM). No meeting can be schedule before the start hour; no meeting can be scheduled at or later than the end hour. Upon successful creation of a meeting schedule, the organizer is given a “secret code” that will be used to authenticate all future edit/delete requests.
